@@ -4,12 +4,12 @@
 
 XQRcode is a Xebia mobile app that allows the users to scan the client's QR code to check in them into the conference.
 
-It's used by Xebia in some notable conferences such as Xebicon, DataXDay, ParisContainerDay or FrenchKit to check in the people at their arrival.
+It's used by Xebia in some notable conferences such as [Xebicon](https://xebicon.fr/), [DataXDay](https://dataxday.fr/), [ParisContainerDay](https://paris-container-day.fr/) or [FrenchKit](https://frenchkit.fr/) to check in the people at their arrival.
 There is also a [Back Office](https://admin.dev.xqrcode.fr/xebia/events).
 
 ## Purpose
 
-Originally XQRCode was an app written in React/Native that you can check [here](https://github.com/xebia-france/x-qrcode-mobile).
+Originally XQRCode was an app [written in React/Native](https://github.com/xebia-france/x-qrcode-mobile).
 The purpose of this project is to rewrite the mobile app using Flutter because the current React/Native app has some issues that seem hard to solves.
 
 The main focus subject will be: 
@@ -58,6 +58,3 @@ Before passing a story to `Done` we should check that:
 There are 2 reasons :
   * Since Flutter announcement, some Xebians wanted to show that they can start a flutter project and be able to achieve them with good maintainability.
   * We wanted a fast development for this app and flutter provides us the possibility to create a cross-platform app faster.
-
-#### Would I be able to join the project?
-Of course, you can talk to Benjamin Lacroix (blacroix@xebia.fr) or Jordan Tuffery (jtuffery@xebia.fr) to be added to the development team.
