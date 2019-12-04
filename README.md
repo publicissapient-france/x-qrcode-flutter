@@ -1,4 +1,4 @@
-# XQRCode
+# XQRCode [![Build Status](https://app.bitrise.io/app/63f45c57f25a2e7c/status.svg?token=NkeyJSF5Qm1acZW8xPLs_g&branch=develop)](https://app.bitrise.io/app/63f45c57f25a2e7c)
 
 ## Description
 
