@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:xqr_code/screens/login/login_screen.dart';
 import 'package:xqr_code/screens/organization_screen.dart';
 import 'routes.dart';
 
-void main() => runApp(XQRCodeApp());
+void main() async {
+  await DotEnv().load('.env');
+  runApp(XQRCodeApp());
+}
 
 class XQRCodeApp extends StatelessWidget {
   @override
@@ -14,7 +18,7 @@ class XQRCodeApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       initialRoute: Routes.login,
-      routes:  <String, WidgetBuilder>{
+      routes: <String, WidgetBuilder>{
         Routes.login: (context) => LoginScreen(),
         Routes.organization: (context) => OrganizationScreen(),
       },

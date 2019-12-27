@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_auth0/flutter_auth0.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../routes.dart';
+import '../routes.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({Key key}) : super(key: key);
@@ -22,8 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     auth0 = Auth0(
-        baseUrl: 'https://x-qrcode.eu.auth0.com',
-        clientId: 'q3xMhKLt7QgsusxXS0OmAaPgw8JBvBlr');
+        baseUrl: DotEnv().env['AUTH_URL'], clientId: DotEnv().env['CLIENT_ID']);
     storage = FlutterSecureStorage();
     super.initState();
   }
@@ -42,22 +42,23 @@ class _LoginScreenState extends State<LoginScreen> {
                   child:
                       SvgPicture.asset('images/xqrcode_logo.svg', height: 150)),
               TextFormField(
-                  controller: usernameController,
-                  decoration: InputDecoration(
-                    enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-                    labelText: "Email",
-                    labelStyle: TextStyle(color: Colors.white),
-                  ),
+                controller: usernameController,
+                decoration: InputDecoration(
+                  enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white)),
+                  labelText: "Email",
+                  labelStyle: TextStyle(color: Colors.white),
+                ),
                 style: TextStyle(color: Colors.white),
               ),
               TextFormField(
                 controller: passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
-                    enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white)),
                     labelText: "Password",
-                    labelStyle: TextStyle(color: Colors.white)
-                ),
+                    labelStyle: TextStyle(color: Colors.white)),
                 style: TextStyle(color: Colors.white),
               ),
               Padding(
@@ -90,7 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
       var response = await auth0.auth.passwordRealm({
         'username': '$username',
         'password': '$password',
-        'realm': 'x-qrcode-dev'
+        'realm': DotEnv().env['REALM']
       });
       await storage.write(key: 'access_token', value: response['access_token']);
       Navigator.pushNamed(context, Routes.organization);

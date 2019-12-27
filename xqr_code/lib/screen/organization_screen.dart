@@ -38,10 +38,10 @@ class ClientInfoWidgetState extends State<ClientInfoWidget> {
 
   @override
   void initState() {
-    auth0 = Auth0(baseUrl: 'https://x-qrcode.eu.auth0.com', clientId: 'q3xMhKLt7QgsusxXS0OmAaPgw8JBvBlr');
+    auth0 = Auth0(baseUrl: 'https://x-qrcode.eu.auth0.com', clientId: '8tMsgaJGFfosk6DCHkvcVhNHYdRk1Kd8');
     var storage = FlutterSecureStorage();
     var token = storage.read(key: 'access_token');
-    _printInfos(token);
+    _printInfo(token);
     super.initState();
   }
 
@@ -53,7 +53,7 @@ class ClientInfoWidgetState extends State<ClientInfoWidget> {
     );
   }
 
-  void _printInfos(Future<String> accessToken) async {
+  void _printInfo(Future<String> accessToken) async {
     try {
       var auth0Auth = Auth0Auth(auth0.auth.clientId, auth0.auth.client.baseUrl, bearer: await accessToken);
       var info = await auth0Auth.getUserInfo();
