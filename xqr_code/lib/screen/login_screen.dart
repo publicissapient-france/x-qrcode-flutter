@@ -4,6 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../constants.dart';
 import '../routes.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -93,7 +94,9 @@ class _LoginScreenState extends State<LoginScreen> {
         'password': '$password',
         'realm': DotEnv().env['REALM']
       });
-      await storage.write(key: 'access_token', value: response['access_token']);
+      await storage.write(
+          key: Constants.of(context).accessTokenKey,
+          value: response['access_token']);
       Navigator.pushNamed(context, Routes.organization);
     } catch (e) {
       print(e);

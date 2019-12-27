@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_auth0/flutter_auth0.dart';
+import 'package:xqr_code/constants.dart';
 
 class OrganizationScreen extends StatefulWidget {
   OrganizationScreen({Key key}) : super(key: key);
@@ -38,9 +40,9 @@ class ClientInfoWidgetState extends State<ClientInfoWidget> {
 
   @override
   void initState() {
-    auth0 = Auth0(baseUrl: 'https://x-qrcode.eu.auth0.com', clientId: '8tMsgaJGFfosk6DCHkvcVhNHYdRk1Kd8');
+    auth0 = Auth0(baseUrl: DotEnv().env['AUTH_URL'], clientId: DotEnv().env['CLIENT_ID']);
     var storage = FlutterSecureStorage();
-    var token = storage.read(key: 'access_token');
+    var token = storage.read(key: Constants.of(context).accessTokenKey);
     _printInfo(token);
     super.initState();
   }
