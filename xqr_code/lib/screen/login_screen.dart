@@ -24,64 +24,75 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     auth0 = Auth0(
-        baseUrl: DotEnv().env['AUTH_URL'], clientId: DotEnv().env['CLIENT_ID']);
+        baseUrl: DotEnv().env[ENV_KEY_AUTH_URL],
+        clientId: DotEnv().env[ENV_KEY_CLIENT_ID]);
     storage = FlutterSecureStorage();
+    _pushOrganizationIfTokenExists();
     super.initState();
   }
 
+  void _pushOrganizationIfTokenExists() {
+    // Todo check appropriate first screen in main.dart
+    Future(() {
+      storage.read(key: STORAGE_KEY_ACCESS_TOKEN).then((token) {
+        if (token != null) {
+          Navigator.pushNamed(context, Routes.organization);
+        }
+      });
+    });
+  }
+
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Color.fromARGB(255, 45, 56, 75),
-        body: Padding(
-          padding: EdgeInsets.only(left: 16, right: 16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Padding(
-                  padding: EdgeInsets.only(bottom: 16),
-                  child:
-                      SvgPicture.asset('images/xqrcode_logo.svg', height: 150)),
-              TextFormField(
-                controller: usernameController,
-                decoration: InputDecoration(
+  Widget build(BuildContext context) => Scaffold(
+      backgroundColor: Color.fromARGB(255, 45, 56, 75),
+      body: Padding(
+        padding: EdgeInsets.only(left: 16, right: 16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+                padding: EdgeInsets.only(bottom: 16),
+                child:
+                    SvgPicture.asset('images/xqrcode_logo.svg', height: 150)),
+            TextFormField(
+              controller: usernameController,
+              decoration: InputDecoration(
+                enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white)),
+                labelText: "Email",
+                labelStyle: TextStyle(color: Colors.white),
+              ),
+              style: TextStyle(color: Colors.white),
+            ),
+            TextFormField(
+              controller: passwordController,
+              obscureText: true,
+              decoration: InputDecoration(
                   enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white)),
-                  labelText: "Email",
-                  labelStyle: TextStyle(color: Colors.white),
-                ),
-                style: TextStyle(color: Colors.white),
-              ),
-              TextFormField(
-                controller: passwordController,
-                obscureText: true,
-                decoration: InputDecoration(
-                    enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white)),
-                    labelText: "Password",
-                    labelStyle: TextStyle(color: Colors.white)),
-                style: TextStyle(color: Colors.white),
-              ),
-              Padding(
-                  padding: EdgeInsets.only(top: 16),
-                  child: RaisedButton(
-                    child: Text(
-                      "Sign in",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    onPressed: () => onPressed(),
-                    color: Colors.blue,
-                  )),
-              Padding(
-                  padding: EdgeInsets.only(top: 16),
-                  child: SvgPicture.asset(
-                    'images/byxebia_logo.svg',
-                    height: 50,
-                  ))
-            ],
-          ),
-        ));
-  }
+                  labelText: "Password",
+                  labelStyle: TextStyle(color: Colors.white)),
+              style: TextStyle(color: Colors.white),
+            ),
+            Padding(
+                padding: EdgeInsets.only(top: 16),
+                child: RaisedButton(
+                  child: Text(
+                    "Sign in",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () => onPressed(),
+                  color: Colors.blue,
+                )),
+            Padding(
+                padding: EdgeInsets.only(top: 16),
+                child: SvgPicture.asset(
+                  'images/byxebia_logo.svg',
+                  height: 50,
+                ))
+          ],
+        ),
+      ));
 
   void onPressed() {
     _connect(usernameController.text, passwordController.text);
@@ -95,8 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
         'realm': DotEnv().env['REALM']
       });
       await storage.write(
-          key: Constants.of(context).accessTokenKey,
-          value: response['access_token']);
+          key: STORAGE_KEY_ACCESS_TOKEN, value: response['access_token']);
       Navigator.pushNamed(context, Routes.organization);
     } catch (e) {
       print(e);

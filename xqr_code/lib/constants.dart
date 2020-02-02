@@ -1,13 +1,6 @@
-import 'package:flutter/widgets.dart';
+const APP_NAMESPACE = 'http://x-qrcode.techx.fr';
 
-class Constants extends InheritedWidget {
-  static Constants of(BuildContext context) =>
-      context.inheritFromWidgetOfExactType(Constants);
+const STORAGE_KEY_ACCESS_TOKEN = 'access_token';
 
-  const Constants({Widget child, Key key}) : super(key: key, child: child);
-
-  final String accessTokenKey = 'access_token';
-
-  @override
-  bool updateShouldNotify(InheritedWidget oldWidget) => false;
-}
+const ENV_KEY_CLIENT_ID = 'CLIENT_ID';
+const ENV_KEY_AUTH_URL = 'AUTH_URL';
