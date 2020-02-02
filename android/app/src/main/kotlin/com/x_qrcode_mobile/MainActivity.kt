@@ -1,4 +1,4 @@
-package fr.xebia.xqr_code
+package com.x_qrcode_mobile
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity
