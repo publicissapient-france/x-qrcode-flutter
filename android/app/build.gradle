@@ -37,7 +37,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "fr.xebia.xqr_code"
+        applicationId "com.x_qrcode_mobile"
         minSdkVersion 21
         targetSdkVersion 29
         versionCode flutterVersionCode.toInteger()
