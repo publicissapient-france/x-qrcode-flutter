@@ -19,12 +19,9 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-
 flutter:
   uses-material-design: true
   assets:
     - images/byxebia_logo.svg
     - images/xqrcode_logo.svg
-
-assets:
-  - .env
+    - .env
