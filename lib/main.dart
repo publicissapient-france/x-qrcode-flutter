@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:xqr_code/screen/login_screen.dart';
-import 'package:xqr_code/screen/organization_screen.dart';
 import 'routes.dart';
+import 'screen/login_screen.dart';
+import 'screen/organization_screen.dart';
 
 void main() async {
   await DotEnv().load('.env');
@@ -13,7 +13,7 @@ class XQRCodeApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'XQRCode',
+      title: 'X-QRCode',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
