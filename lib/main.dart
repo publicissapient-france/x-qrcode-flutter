@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:x_qrcode/screen/events_screen.dart';
 import 'routes.dart';
 import 'screen/login_screen.dart';
 import 'screen/organization_screen.dart';
@@ -20,7 +21,8 @@ class XQRCodeApp extends StatelessWidget {
       initialRoute: Routes.login,
       routes: <String, WidgetBuilder>{
         Routes.login: (context) => LoginScreen(),
-        Routes.organization: (context) => OrganizationScreen(),
+        Routes.organizations: (context) => OrganizationsScreen(),
+        Routes.events: (context) => EventsScreen(),
       },
     );
   }

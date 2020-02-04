@@ -24,8 +24,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     auth0 = Auth0(
-        baseUrl: DotEnv().env[ENV_KEY_AUTH_URL],
-        clientId: DotEnv().env[ENV_KEY_CLIENT_ID]);
+        baseUrl: DotEnv().env[ENV_KEY_OAUTH_AUTH_URL],
+        clientId: DotEnv().env[ENV_KEY_OAUTH_CLIENT_ID]);
     storage = FlutterSecureStorage();
     _pushOrganizationIfTokenExists();
     super.initState();
@@ -36,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
     Future(() {
       storage.read(key: STORAGE_KEY_ACCESS_TOKEN).then((token) {
         if (token != null) {
-          Navigator.pushNamed(context, Routes.organization);
+          Navigator.pushNamed(context, Routes.events);
         }
       });
     });
@@ -103,11 +103,14 @@ class _LoginScreenState extends State<LoginScreen> {
       var response = await auth0.auth.passwordRealm({
         'username': '$username',
         'password': '$password',
-        'realm': DotEnv().env['REALM']
+        'audience': DotEnv().env[ENV_KEY_OAUTH_AUTH_URL],
+        'scope': DotEnv().env[ENV_KEY_OAUTH_SCOPE],
+        'realm': DotEnv().env[ENV_KEY_OAUTH_REALM]
       });
+      final token = response['access_token'];
       await storage.write(
-          key: STORAGE_KEY_ACCESS_TOKEN, value: response['access_token']);
-      Navigator.pushNamed(context, Routes.organization);
+          key: STORAGE_KEY_ACCESS_TOKEN, value: token);
+      Navigator.pushNamed(context, Routes.organizations);
     } catch (e) {
       print(e);
     }
