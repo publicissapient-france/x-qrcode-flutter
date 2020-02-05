@@ -1,4 +1,5 @@
 class Routes {
   static String login = '/';
-  static String organization = '/organization';
+  static String organizations = '/organizations';
+  static String events = '/events';
 }
