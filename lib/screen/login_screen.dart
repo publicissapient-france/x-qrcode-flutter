@@ -103,7 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
       var response = await auth0.auth.passwordRealm({
         'username': '$username',
         'password': '$password',
-        'audience': DotEnv().env[ENV_KEY_OAUTH_AUTH_URL],
+        'audience': DotEnv().env[ENV_KEY_OAUTH_AUDIENCE],
         'scope': DotEnv().env[ENV_KEY_OAUTH_SCOPE],
         'realm': DotEnv().env[ENV_KEY_OAUTH_REALM]
       });
