@@ -38,7 +38,7 @@ class _EventsScreenState extends State<EventsScreen> {
                         Container(
                           margin: EdgeInsets.only(top: 64, bottom: 16),
                           child: Text(
-                            '👌 Veuillez sélectionner l’événement maintenant.',
+                            '👌 Veuillez sélectionner l’événement.',
                             style: TextStyle(color: Colors.white),
                           ),
                         ),
