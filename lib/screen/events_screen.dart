@@ -7,6 +7,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 import '../constants.dart';
+import '../routes.dart';
 
 class EventsScreen extends StatefulWidget {
   EventsScreen({Key key}) : super(key: key);
@@ -44,27 +45,38 @@ class _EventsScreenState extends State<EventsScreen> {
                         ),
                         ListBody(
                             children: snapshot.data
-                                .map((event) => Card(
-                                    elevation: 2,
-                                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                                    child: Column(
-                                      children: <Widget>[
-                                        Image.network(event.image),
-                                        Container(
-                                            margin: EdgeInsets.all(16),
-                                            child: Column(
-                                              children: [
-                                                Text(
-                                                  event.name,
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                                Text(event.tagline),
-                                              ],
-                                            ))
-                                      ],
-                                    )))
+                                .map((event) => GestureDetector(
+                                      onTap: () async {
+                                        await FlutterSecureStorage().write(
+                                            key: STORAGE_KEY_EVENT,
+                                            value: event.id);
+                                        Navigator.pushNamed(
+                                            context, Routes.visitors);
+                                      },
+                                      child: Card(
+                                          elevation: 2,
+                                          clipBehavior:
+                                              Clip.antiAliasWithSaveLayer,
+                                          child: Column(
+                                            children: <Widget>[
+                                              Image.network(event.image),
+                                              Container(
+                                                  margin: EdgeInsets.all(16),
+                                                  child: Column(
+                                                    children: [
+                                                      Text(
+                                                        event.name,
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                      Text(event.tagline),
+                                                    ],
+                                                  ))
+                                            ],
+                                          )),
+                                    ))
                                 .toList()),
                       ],
                     );
