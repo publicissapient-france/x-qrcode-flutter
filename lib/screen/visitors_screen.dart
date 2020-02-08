@@ -31,7 +31,7 @@ class _VisitorsScreeState extends State<VisitorsScreen> {
   Widget build(BuildContext context) => Scaffold(
       drawer: Drawer(),
       appBar: AppBar(
-        title: Text('Visitors'),
+        title: Text('Visiteurs'),
       ),
       body: Padding(
           padding: EdgeInsets.all(16),
