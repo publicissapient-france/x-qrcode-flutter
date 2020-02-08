@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:x_qrcode/screen/consent_screen.dart';
 import 'package:x_qrcode/screen/events_screen.dart';
 import 'package:x_qrcode/screen/visitors_screen.dart';
 import 'routes.dart';
@@ -19,12 +20,12 @@ class XQRCodeApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: Routes.login,
       routes: <String, WidgetBuilder>{
         Routes.login: (context) => LoginScreen(),
         Routes.organizations: (context) => OrganizationsScreen(),
         Routes.events: (context) => EventsScreen(),
         Routes.visitors: (context) => VisitorsScreen(),
+        Routes.consent: (context) => ConsentScreen(),
       },
     );
   }
