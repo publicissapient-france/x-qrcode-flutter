@@ -1,11 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:signature/signature.dart';
 
 class ConsentScreen extends StatefulWidget {
+  final String visitorId;
+
+  ConsentScreen({Key key, @required this.visitorId}) : super(key: key);
+
   @override
-  State<StatefulWidget> createState() => _ConsentScreenState();
+  State<StatefulWidget> createState() => _ConsentScreenState(visitorId);
 }
 
 class _ConsentScreenState extends State<ConsentScreen> {
+  final String visitorId;
+
+  final signature = SignatureController();
+
+  var consent = false;
+  var signed = false;
+
+  _ConsentScreenState(this.visitorId);
+
+  @override
+  void initState() {
+    signature.addListener(() => setState(() => signed = true));
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
@@ -68,23 +88,35 @@ class _ConsentScreenState extends State<ConsentScreen> {
                                       ', et j‘accepte que mes informations détaillées ci-avant lui soient communiquées directement par l‘Organisateur.'),
                             ]),
                       )),
-                  IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.check_box_outline_blank),
+                  Checkbox(
+                    value: consent,
+                    onChanged: (bool value) {
+                      setState(() {
+                        consent = value;
+                      });
+                    },
                   )
                 ],
               ),
+              Container(
+                  padding: EdgeInsets.only(top: 16),
+                  child: Signature(
+                    controller: signature,
+                    width: MediaQuery.of(context).size.width,
+                    height: 200,
+                    backgroundColor: Colors.white,
+                  )),
               Container(
                   padding: EdgeInsets.only(top: 16, bottom: 16),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       RaisedButton(
-                        onPressed: null,
+                        onPressed: () {},
                         child: Text('Annuler'),
                       ),
                       RaisedButton(
-                        onPressed: () {},
+                        onPressed: consent && signed ? () {} : null,
                         child: Text('Valider'),
                       )
                     ],
