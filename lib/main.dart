@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:x_qrcode/screen/consent_screen.dart';
+import 'package:x_qrcode/visitors/consent_screen.dart';
 import 'package:x_qrcode/screen/events_screen.dart';
-import 'package:x_qrcode/screen/visitors_screen.dart';
+import 'package:x_qrcode/visitors/visitors_screen.dart';
+import 'auth/login_screen.dart';
 import 'routes.dart';
-import 'screen/login_screen.dart';
-import 'screen/organization_screen.dart';
+import 'organization/organization_screen.dart';
 
 void main() async {
   await DotEnv().load('.env');
@@ -25,7 +25,7 @@ class XQRCodeApp extends StatelessWidget {
         Routes.organizations: (context) => OrganizationsScreen(),
         Routes.events: (context) => EventsScreen(),
         Routes.visitors: (context) => VisitorsScreen(),
-        Routes.consent: (context) => ConsentScreen(),
+        Routes.consent: (context) => ConsentScreen(visitorId: '18436310'),
       },
     );
   }
