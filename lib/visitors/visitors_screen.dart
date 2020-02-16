@@ -67,7 +67,7 @@ class _VisitorsScreeState extends State<VisitorsScreen> {
           final visitorConsent = await Navigator.pushNamed(
               context, consentRoute,
               arguments: ConsentScreenArguments('22073757'));
-          if (visitorConsent) {
+          if (visitorConsent == true) {
             this.visitors = _getVisitors();
           }
         },
