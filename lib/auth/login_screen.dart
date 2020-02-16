@@ -3,40 +3,37 @@ import 'package:flutter_auth0/flutter_auth0.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:x_qrcode/organization/organization_screen.dart';
 
 import '../constants.dart';
-import '../routes.dart';
+
+const loginRoute = '/';
 
 class LoginScreen extends StatefulWidget {
-  LoginScreen({Key key}) : super(key: key);
-
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  Auth0 auth0;
-  FlutterSecureStorage storage;
+  final Auth0 auth0 = Auth0(
+      baseUrl: DotEnv().env[ENV_KEY_OAUTH_AUTH_URL],
+      clientId: DotEnv().env[ENV_KEY_OAUTH_CLIENT_ID]);
+  final FlutterSecureStorage storage = FlutterSecureStorage();
 
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   @override
   void initState() {
-    auth0 = Auth0(
-        baseUrl: DotEnv().env[ENV_KEY_OAUTH_AUTH_URL],
-        clientId: DotEnv().env[ENV_KEY_OAUTH_CLIENT_ID]);
-    storage = FlutterSecureStorage();
     _pushOrganizationIfTokenExists();
     super.initState();
   }
 
   void _pushOrganizationIfTokenExists() {
-    // Todo check appropriate first screen in main.dart
     Future(() {
       storage.read(key: STORAGE_KEY_ACCESS_TOKEN).then((token) {
         if (token != null) {
-          Navigator.pushNamed(context, Routes.events);
+          Navigator.pushNamed(context, organisationsRoute);
         }
       });
     });
@@ -108,9 +105,8 @@ class _LoginScreenState extends State<LoginScreen> {
         'realm': DotEnv().env[ENV_KEY_OAUTH_REALM]
       });
       final token = response['access_token'];
-      await storage.write(
-          key: STORAGE_KEY_ACCESS_TOKEN, value: token);
-      Navigator.pushNamed(context, Routes.organizations);
+      await storage.write(key: STORAGE_KEY_ACCESS_TOKEN, value: token);
+      Navigator.pushNamed(context, organisationsRoute);
     } catch (e) {
       print(e);
     }

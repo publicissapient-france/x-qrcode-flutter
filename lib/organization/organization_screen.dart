@@ -2,15 +2,17 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_auth0/flutter_auth0.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter_auth0/flutter_auth0.dart';
 import 'package:http/http.dart' as http;
 import 'package:x_qrcode/organization/user.dart';
+import 'package:x_qrcode/screen/events_screen.dart';
 
 import '../constants.dart';
-import '../routes.dart';
 import 'company.dart';
+
+const organisationsRoute = '/organizations';
 
 class OrganizationsScreen extends StatefulWidget {
   OrganizationsScreen({Key key}) : super(key: key);
@@ -20,13 +22,17 @@ class OrganizationsScreen extends StatefulWidget {
 }
 
 class _OrganizationsScreenState extends State<OrganizationsScreen> {
-  Auth0 auth0;
+  final Auth0 auth0 = Auth0(
+      baseUrl: DotEnv().env[ENV_KEY_OAUTH_AUTH_URL],
+      clientId: DotEnv().env[ENV_KEY_OAUTH_CLIENT_ID]);
+  final FlutterSecureStorage storage = FlutterSecureStorage();
+
   Future<UserInfo> userInfo;
 
   @override
   void initState() {
+    _pushEventsIfOrganisationExists();
     super.initState();
-    userInfo = _getUserInfo();
   }
 
   @override
@@ -71,7 +77,7 @@ class _OrganizationsScreenState extends State<OrganizationsScreen> {
                                     await FlutterSecureStorage().write(
                                         key: STORAGE_KEY_USER,
                                         value: jsonEncode(user));
-                                    Navigator.pushNamed(context, Routes.events);
+                                    Navigator.pushNamed(context, eventsRoute);
                                   },
                                   child: Text(tenant),
                                 ))
@@ -87,19 +93,16 @@ class _OrganizationsScreenState extends State<OrganizationsScreen> {
       );
 
   Future<UserInfo> _getUserInfo() async {
-    auth0 = Auth0(
-        baseUrl: DotEnv().env[ENV_KEY_OAUTH_AUTH_URL],
-        clientId: DotEnv().env[ENV_KEY_OAUTH_CLIENT_ID]);
-    var accessToken =
+    final accessToken =
         await FlutterSecureStorage().read(key: STORAGE_KEY_ACCESS_TOKEN);
-    var auth0Auth = Auth0Auth(auth0.auth.clientId, auth0.auth.client.baseUrl,
+    final auth0Auth = Auth0Auth(auth0.auth.clientId, auth0.auth.client.baseUrl,
         bearer: accessToken);
-    var info = await auth0Auth.getUserInfo();
+    final info = await auth0Auth.getUserInfo();
     return UserInfo.fromJson(info);
   }
 
   Future<Company> _getCompany(tenant) async {
-    var accessToken =
+    final accessToken =
         await FlutterSecureStorage().read(key: STORAGE_KEY_ACCESS_TOKEN);
     final response = await http.get(
         '${DotEnv().env[ENV_KEY_API_URL]}/$tenant/companies/my-company',
@@ -109,6 +112,18 @@ class _OrganizationsScreenState extends State<OrganizationsScreen> {
     } else {
       throw Exception('Cannot get company');
     }
+  }
+
+  void _pushEventsIfOrganisationExists() {
+    Future(() {
+      storage.read(key: STORAGE_KEY_USER).then((user) {
+        if (user != null) {
+          Navigator.pushNamed(context, eventsRoute);
+        } else {
+          userInfo = _getUserInfo();
+        }
+      });
+    });
   }
 }
 

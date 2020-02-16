@@ -4,12 +4,20 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
 import 'package:signature/signature.dart';
 import 'package:x_qrcode/organization/user.dart';
 import 'package:x_qrcode/visitors/attendee.dart';
-import 'package:http/http.dart' as http;
 
 import '../constants.dart';
+
+class ConsentScreenArguments {
+  final String visitorId;
+
+  ConsentScreenArguments(this.visitorId);
+}
+
+const consentRoute = '/consent';
 
 class ConsentScreen extends StatefulWidget {
   final String visitorId;
@@ -138,8 +146,11 @@ class _ConsentScreenState extends State<ConsentScreen> {
                               RaisedButton(
                                 onPressed: consent && signed
                                     ? () async {
-                                        await _addVisitor(
-                                            snapshot.data.visitor, signature);
+                                  final bytes =
+                                  await signature.toPngBytes();
+                                  await _addVisitor(snapshot.data.visitor,
+                                      "data:image/png;base64,${base64.encode(
+                                          bytes)}");
                                       }
                                     : null,
                                 child: Text('Valider'),
@@ -191,7 +202,7 @@ class _ConsentScreenState extends State<ConsentScreen> {
           'signature': signature,
         });
     if (response.statusCode == 201) {
-      // TODO profile
+      Navigator.pop(context, true);
     } else {
       throw Exception('Cannot add visitor');
     }
