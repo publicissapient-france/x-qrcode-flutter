@@ -31,7 +31,7 @@ class _OrganizationsScreenState extends State<OrganizationsScreen> {
 
   @override
   void initState() {
-    _pushEventsIfOrganisationExists();
+    userInfo = _getUserInfo();
     super.initState();
   }
 
@@ -50,11 +50,11 @@ class _OrganizationsScreenState extends State<OrganizationsScreen> {
                       margin: EdgeInsets.only(top: 64, bottom: 16),
                       child: RichText(
                         text: TextSpan(
-                            text: '',
+                            text: 'Bonjour',
                             style: TextStyle(color: Colors.white),
                             children: [
                               TextSpan(
-                                  text: 'Bonjour ${snapshot.data.firstName}',
+                                  text: ' ${snapshot.data.firstName}',
                                   style:
                                       TextStyle(fontWeight: FontWeight.bold)),
                               TextSpan(
@@ -112,18 +112,6 @@ class _OrganizationsScreenState extends State<OrganizationsScreen> {
     } else {
       throw Exception('Cannot get company');
     }
-  }
-
-  void _pushEventsIfOrganisationExists() {
-    Future(() {
-      storage.read(key: STORAGE_KEY_USER).then((user) {
-        if (user != null) {
-          Navigator.pushNamed(context, eventsRoute);
-        } else {
-          userInfo = _getUserInfo();
-        }
-      });
-    });
   }
 }
 

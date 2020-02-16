@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:x_qrcode/common/app_drawer.dart';
 import 'package:x_qrcode/organization/user.dart';
 import 'package:x_qrcode/visitors/attendee.dart';
 import 'package:x_qrcode/visitors/consent_screen.dart';
@@ -18,7 +19,7 @@ class VisitorsScreen extends StatefulWidget {
   VisitorsScreen({Key key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _VisitorsScreeState();
+  _VisitorsScreeState createState() => _VisitorsScreeState();
 }
 
 class _VisitorsScreeState extends State<VisitorsScreen> {
@@ -34,7 +35,7 @@ class _VisitorsScreeState extends State<VisitorsScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      drawer: Drawer(),
+      drawer: AppDrawer(),
       appBar: AppBar(
         title: Text('Visiteurs'),
       ),
