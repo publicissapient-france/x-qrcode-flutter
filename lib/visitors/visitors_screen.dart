@@ -7,6 +7,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:x_qrcode/common/app_drawer.dart';
+import 'package:x_qrcode/events/events_screen.dart';
 import 'package:x_qrcode/organization/user.dart';
 import 'package:x_qrcode/visitors/attendee.dart';
 import 'package:x_qrcode/visitors/consent_screen.dart';
@@ -79,10 +80,12 @@ class _VisitorsScreeState extends State<VisitorsScreen> {
     final user =
         User.fromJson(jsonDecode(await storage.read(key: STORAGE_KEY_USER)));
     final accessToken = await storage.read(key: STORAGE_KEY_ACCESS_TOKEN);
-    final event = await storage.read(key: STORAGE_KEY_EVENT);
+    final event =
+    Event.fromJson(jsonDecode(await storage.read(key: STORAGE_KEY_EVENT)));
 
     final response = await http.get(
-        '${DotEnv().env[ENV_KEY_API_URL]}/${user.tenant}/events/$event/visitors',
+        '${DotEnv().env[ENV_KEY_API_URL]}/${user.tenant}/events/${event
+            .id}/visitors',
         headers: {HttpHeaders.authorizationHeader: "Bearer $accessToken"});
 
     if (response.statusCode == 200) {

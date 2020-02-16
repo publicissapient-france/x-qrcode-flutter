@@ -22,10 +22,10 @@ class OrganizationsScreen extends StatefulWidget {
 }
 
 class _OrganizationsScreenState extends State<OrganizationsScreen> {
-  final Auth0 auth0 = Auth0(
+  final auth0 = Auth0(
       baseUrl: DotEnv().env[ENV_KEY_OAUTH_AUTH_URL],
       clientId: DotEnv().env[ENV_KEY_OAUTH_CLIENT_ID]);
-  final FlutterSecureStorage storage = FlutterSecureStorage();
+  final storage = FlutterSecureStorage();
 
   Future<UserInfo> userInfo;
 
@@ -74,7 +74,7 @@ class _OrganizationsScreenState extends State<OrganizationsScreen> {
                                         snapshot.data.lastName,
                                         tenant,
                                         company);
-                                    await FlutterSecureStorage().write(
+                                    await storage.write(
                                         key: STORAGE_KEY_USER,
                                         value: jsonEncode(user));
                                     Navigator.pushNamed(context, eventsRoute);
@@ -94,7 +94,7 @@ class _OrganizationsScreenState extends State<OrganizationsScreen> {
 
   Future<UserInfo> _getUserInfo() async {
     final accessToken =
-        await FlutterSecureStorage().read(key: STORAGE_KEY_ACCESS_TOKEN);
+    await storage.read(key: STORAGE_KEY_ACCESS_TOKEN);
     final auth0Auth = Auth0Auth(auth0.auth.clientId, auth0.auth.client.baseUrl,
         bearer: accessToken);
     final info = await auth0Auth.getUserInfo();
@@ -103,7 +103,7 @@ class _OrganizationsScreenState extends State<OrganizationsScreen> {
 
   Future<Company> _getCompany(tenant) async {
     final accessToken =
-        await FlutterSecureStorage().read(key: STORAGE_KEY_ACCESS_TOKEN);
+    await storage.read(key: STORAGE_KEY_ACCESS_TOKEN);
     final response = await http.get(
         '${DotEnv().env[ENV_KEY_API_URL]}/$tenant/companies/my-company',
         headers: {HttpHeaders.authorizationHeader: "Bearer $accessToken"});

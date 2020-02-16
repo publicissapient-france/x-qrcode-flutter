@@ -3,9 +3,17 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:x_qrcode/auth/login_screen.dart';
+import 'package:x_qrcode/events/events_screen.dart';
 import 'package:x_qrcode/organization/user.dart';
 
 import '../constants.dart';
+
+class _AppDrawerData {
+  final User user;
+  final Event event;
+
+  _AppDrawerData(this.user, this.event);
+}
 
 class AppDrawer extends StatefulWidget {
   @override
@@ -15,18 +23,18 @@ class AppDrawer extends StatefulWidget {
 class _AppDrawerState extends State<AppDrawer> {
   final storage = FlutterSecureStorage();
 
-  Future<User> user;
+  Future<_AppDrawerData> data;
 
   @override
   void initState() {
-    user = _getUser();
+    data = _getData();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) => Drawer(
-        child: FutureBuilder<User>(
-          future: user,
+    child: FutureBuilder<_AppDrawerData>(
+      future: data,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return ListView(
@@ -36,16 +44,22 @@ class _AppDrawerState extends State<AppDrawer> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
+                        Container(
+                          height: 75,
+                          margin: EdgeInsets.only(bottom: 8),
+                          child: Image.network(snapshot.data.event.image),
+                        ),
                         Text(
-                          "${snapshot.data.firstName} ${snapshot.data.lastName}",
+                          "${snapshot.data.user.firstName} ${snapshot.data.user
+                              .lastName}",
                           style: TextStyle(color: Colors.white),
                         ),
                         Text(
-                          snapshot.data.tenant,
+                          snapshot.data.user.company.name,
                           style: TextStyle(color: Colors.white),
                         ),
                         Text(
-                          snapshot.data.company.name,
+                          snapshot.data.event.name,
                           style: TextStyle(color: Colors.white),
                         ),
                       ],
@@ -66,8 +80,11 @@ class _AppDrawerState extends State<AppDrawer> {
         ),
       );
 
-  Future<User> _getUser() async =>
-      User.fromJson(jsonDecode(await storage.read(key: STORAGE_KEY_USER)));
+  Future<_AppDrawerData> _getData() async =>
+      _AppDrawerData(
+          User.fromJson(jsonDecode(await storage.read(key: STORAGE_KEY_USER))),
+          Event.fromJson(
+              jsonDecode(await storage.read(key: STORAGE_KEY_EVENT))));
 
   _logout() async {
     await storage.deleteAll();
