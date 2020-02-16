@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:x_qrcode/events/events_screen.dart';
 import 'package:x_qrcode/home/home_screen.dart';
-import 'package:x_qrcode/screen/events_screen.dart';
 import 'package:x_qrcode/visitors/consent_screen.dart';
 import 'package:x_qrcode/visitors/visitors_screen.dart';
 

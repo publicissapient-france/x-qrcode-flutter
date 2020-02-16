@@ -6,8 +6,8 @@ import 'package:flutter_auth0/flutter_auth0.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:x_qrcode/events/events_screen.dart';
 import 'package:x_qrcode/organization/user.dart';
-import 'package:x_qrcode/screen/events_screen.dart';
 
 import '../constants.dart';
 import 'company.dart';
