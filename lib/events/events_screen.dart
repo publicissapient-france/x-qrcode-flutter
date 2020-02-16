@@ -1,13 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:x_qrcode/organization/user.dart';
+import 'package:x_qrcode/visitors/visitors_screen.dart';
 
 import '../constants.dart';
-import '../routes.dart';
+
+const eventsRoute = '/events';
 
 class EventsScreen extends StatefulWidget {
   EventsScreen({Key key}) : super(key: key);
@@ -51,7 +55,7 @@ class _EventsScreenState extends State<EventsScreen> {
                                             key: STORAGE_KEY_EVENT,
                                             value: event.id);
                                         Navigator.pushNamed(
-                                            context, Routes.visitors);
+                                            context, visitorRoute);
                                       },
                                       child: Card(
                                           elevation: 2,
@@ -88,10 +92,11 @@ class _EventsScreenState extends State<EventsScreen> {
 
   Future<List<Event>> _getEventsByTenant() async {
     final storage = FlutterSecureStorage();
-    final tenant = await storage.read(key: STORAGE_KEY_TENANT);
+    final user =
+        User.fromJson(jsonDecode(await storage.read(key: STORAGE_KEY_USER)));
     final accessToken = await storage.read(key: STORAGE_KEY_ACCESS_TOKEN);
     final response = await http.get(
-        '${DotEnv().env[ENV_KEY_API_URL]}/$tenant/events',
+        '${DotEnv().env[ENV_KEY_API_URL]}/${user.tenant}/events',
         headers: {HttpHeaders.authorizationHeader: "Bearer $accessToken"});
     if (response.statusCode == 200) {
       final _rawEvents = jsonDecode(response.body);
