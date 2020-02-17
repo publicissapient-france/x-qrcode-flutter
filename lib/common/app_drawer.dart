@@ -40,33 +40,17 @@ class _AppDrawerState extends State<AppDrawer> {
               return ListView(
                 padding: EdgeInsets.zero,
                 children: <Widget>[
-                  DrawerHeader(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Container(
-                          height: 75,
-                          margin: EdgeInsets.only(bottom: 8),
-                          child: Image.network(snapshot.data.event.image),
-                        ),
-                        Text(
+                  UserAccountsDrawerHeader(
+                      accountName: Text(
                           "${snapshot.data.user.firstName} ${snapshot.data.user
-                              .lastName}",
-                          style: TextStyle(color: Colors.white),
+                              .lastName} - ${snapshot.data.user.company.name}"),
+                      accountEmail: Text(snapshot.data.event.name),
+                      currentAccountPicture: CircleAvatar(
+                        child: Text(
+                          snapshot.data.user.firstName.substring(0, 1),
+                          style: TextStyle(fontSize: 40),
                         ),
-                        Text(
-                          snapshot.data.user.company.name,
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        Text(
-                          snapshot.data.event.name,
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ],
-                    ),
-                    decoration:
-                        BoxDecoration(color: Theme.of(context).primaryColor),
-                  ),
+                      )),
                   ListTile(
                     leading: Icon(Icons.exit_to_app, color: Colors.black),
                     title: Text('Se déconnecter'),
