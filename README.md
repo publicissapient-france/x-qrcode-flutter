@@ -16,4 +16,4 @@ Required variables:
 * CLIENT_ID
 * REALM
 
-💡 You can find those variables on XQR Code web app.
+💡 You can find those variables on X-QRCode web app.
