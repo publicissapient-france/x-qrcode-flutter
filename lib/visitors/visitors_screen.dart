@@ -11,6 +11,7 @@ import 'package:http/http.dart' as http;
 import 'package:x_qrcode/common/app_drawer.dart';
 import 'package:x_qrcode/events/events_screen.dart';
 import 'package:x_qrcode/organization/user.dart';
+import 'package:x_qrcode/profile/profile_screen.dart';
 import 'package:x_qrcode/visitors/attendee.dart';
 
 import '../constants.dart';
@@ -52,16 +53,23 @@ class _VisitorsScreeState extends State<VisitorsScreen> {
                   return ListView.builder(
                       itemCount: snapshot.data.length,
                       itemBuilder: (context, index) {
-                        return Card(
-                          elevation: 2,
-                          child: Container(
-                            decoration: BoxDecoration(color: Colors.white),
-                            child: ListTile(
-                              title: Text(
-                                  "${snapshot.data[index].firstName} ${snapshot.data[index].lastName}"),
-                            ),
-                          ),
-                        );
+                        Attendee visitor = snapshot.data[index];
+                        return GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(context, profileRoute,
+                                  arguments:
+                                      ProfileScreenArguments(visitor.id));
+                            },
+                            child: Card(
+                              elevation: 2,
+                              child: Container(
+                                decoration: BoxDecoration(color: Colors.white),
+                                child: ListTile(
+                                  title: Text(
+                                      "${visitor.firstName} ${visitor.lastName}"),
+                                ),
+                              ),
+                            ));
                       });
                 } else {
                   return Center(child: CircularProgressIndicator());
