@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:x_qrcode/events/events_screen.dart';
 import 'package:x_qrcode/home/home_screen.dart';
+import 'package:x_qrcode/profile/profile_screen.dart';
 import 'package:x_qrcode/visitors/consent_screen.dart';
 import 'package:x_qrcode/visitors/visitors_screen.dart';
 
@@ -33,6 +34,11 @@ class XQRCodeApp extends StatelessWidget {
             return MaterialPageRoute(builder: (_) {
               final ConsentScreenArguments args = settings.arguments;
               return ConsentScreen(visitorId: args.visitorId);
+            });
+          case profileRoute:
+            return MaterialPageRoute(builder: (_) {
+              final ProfileScreenArguments args = settings.arguments;
+              return ProfileScreen(visitorId: args.visitorId);
             });
           default:
             return MaterialPageRoute(builder: (_) => Container());
