@@ -56,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
               decoration: InputDecoration(
                 enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.white)),
-                labelText: "Email",
+                labelText: "E-mail",
                 labelStyle: TextStyle(color: Colors.white),
               ),
               style: TextStyle(color: Colors.white),
@@ -67,26 +67,20 @@ class _LoginScreenState extends State<LoginScreen> {
               decoration: InputDecoration(
                   enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white)),
-                  labelText: "Password",
+                  labelText: "Mot de passe",
                   labelStyle: TextStyle(color: Colors.white)),
               style: TextStyle(color: Colors.white),
             ),
             Padding(
-                padding: EdgeInsets.only(top: 16),
+                padding: EdgeInsets.only(top: 32),
                 child: RaisedButton(
                   child: Text(
-                    "Sign in",
+                    "Se connecter",
                     style: TextStyle(color: Colors.white),
                   ),
                   onPressed: () => onPressed(),
                   color: Colors.blue,
                 )),
-            Padding(
-                padding: EdgeInsets.only(top: 16),
-                child: SvgPicture.asset(
-                  'images/byxebia_logo.svg',
-                  height: 50,
-                ))
           ],
         ),
       ));

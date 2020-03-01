@@ -123,7 +123,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     border: InputBorder.none,
                                     hintText:
                                         'Ajouter des notes à propos de ${snapshot.data.firstName}...'),
-                                autofocus: true,
                                 minLines: 2,
                                 maxLines: 6,
                                 textCapitalization:

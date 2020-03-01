@@ -85,10 +85,13 @@ class _VisitorsScreeState extends State<VisitorsScreen> {
     try {
       String barcode = await BarcodeScanner.scan();
       Map<String, dynamic> attendee = jsonDecode(barcode);
+      var visitorId = attendee['attendee_id'];
       final visitorConsent = await Navigator.pushNamed(context, consentRoute,
-          arguments: ConsentScreenArguments(attendee['attendee_id']));
+          arguments: ConsentScreenArguments(visitorId));
       if (visitorConsent == true) {
         this.visitors = _getVisitors();
+        Navigator.pushNamed(context, profileRoute,
+            arguments: ProfileScreenArguments(visitorId));
       }
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
