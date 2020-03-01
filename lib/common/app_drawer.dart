@@ -22,6 +22,7 @@ class AppDrawer extends StatefulWidget {
 
 class _AppDrawerState extends State<AppDrawer> {
   final storage = FlutterSecureStorage();
+  final modes = List.generate(2, (_) => false);
 
   Future<_AppDrawerData> data;
 
@@ -33,29 +34,63 @@ class _AppDrawerState extends State<AppDrawer> {
 
   @override
   Widget build(BuildContext context) => Drawer(
-    child: FutureBuilder<_AppDrawerData>(
-      future: data,
+        child: FutureBuilder<_AppDrawerData>(
+          future: data,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return ListView(
-                padding: EdgeInsets.zero,
+              return Column(
                 children: <Widget>[
-                  UserAccountsDrawerHeader(
-                      accountName: Text(
-                          "${snapshot.data.user.firstName} ${snapshot.data.user
-                              .lastName} - ${snapshot.data.user.company.name}"),
-                      accountEmail: Text(snapshot.data.event.name),
-                      currentAccountPicture: CircleAvatar(
-                        child: Text(
-                          snapshot.data.user.firstName.substring(0, 1),
-                          style: TextStyle(fontSize: 40),
+                  Expanded(
+                    child: ListView(
+                      children: <Widget>[
+                        UserAccountsDrawerHeader(
+                            accountName: Text(
+                                "${snapshot.data.user.firstName} ${snapshot.data.user.lastName} - ${snapshot.data.user.company.name}"),
+                            accountEmail: Text(snapshot.data.event.name),
+                            currentAccountPicture: CircleAvatar(
+                              child: Text(
+                                snapshot.data.user.firstName.substring(0, 1),
+                                style: TextStyle(fontSize: 40),
+                              ),
+                            )),
+                        Container(
+                          alignment: Alignment.topLeft,
+                          margin: EdgeInsets.only(top: 16, left: 16, right: 16),
+                          child: ToggleButtons(
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                            isSelected: modes,
+                            children: <Widget>[
+                              Padding(
+                                padding: EdgeInsets.only(left: 16, right: 16),
+                                child: Text('Check-in'),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 16, right: 16),
+                                child: Text('Sponsor'),
+                              ),
+                            ],
+                            onPressed: (index) {
+                              setState(() {
+                                for (int i = 0; i < this.modes.length; i++) {
+                                  this.modes[i] = false;
+                                }
+                                this.modes[index] = !this.modes[index];
+                              });
+                            },
+                          ),
                         ),
-                      )),
-                  ListTile(
-                    leading: Icon(Icons.exit_to_app, color: Colors.black),
-                    title: Text('Se déconnecter'),
-                    onTap: _logout,
-                  )
+                      ],
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.bottomLeft,
+                    padding: EdgeInsets.all(16),
+                    child: RaisedButton.icon(
+                      icon: Icon(Icons.exit_to_app),
+                      label: Text('Se déconnecter'),
+                      onPressed: _logout,
+                    ),
+                  ),
                 ],
               );
             }
@@ -64,11 +99,9 @@ class _AppDrawerState extends State<AppDrawer> {
         ),
       );
 
-  Future<_AppDrawerData> _getData() async =>
-      _AppDrawerData(
-          User.fromJson(jsonDecode(await storage.read(key: STORAGE_KEY_USER))),
-          Event.fromJson(
-              jsonDecode(await storage.read(key: STORAGE_KEY_EVENT))));
+  Future<_AppDrawerData> _getData() async => _AppDrawerData(
+      User.fromJson(jsonDecode(await storage.read(key: STORAGE_KEY_USER))),
+      Event.fromJson(jsonDecode(await storage.read(key: STORAGE_KEY_EVENT))));
 
   _logout() async {
     await storage.deleteAll();
