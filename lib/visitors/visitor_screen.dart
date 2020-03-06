@@ -156,7 +156,7 @@ class _VisitorScreenState extends State<VisitorScreen> {
                                 ? 8
                                 : 0),
                         child: Padding(
-                          padding: EdgeInsets.all(16),
+                          padding: EdgeInsets.all(8),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
@@ -167,15 +167,19 @@ class _VisitorScreenState extends State<VisitorScreen> {
                                     color: Colors.grey,
                                   ),
                                   Expanded(
-                                    child: Text(
-                                      ' ${comment.authorFirstName}',
-                                    ),
-                                  ),
-                                  comment.date != null
-                                      ? Text(
-                                          _toPrettyDate(comment.date),
-                                        )
-                                      : Container()
+                                      child: Text(_commentTitleLine(comment))),
+                                  PopupMenuButton<String>(
+                                    icon: Icon(Icons.more_vert,
+                                        color: Colors.grey),
+                                    itemBuilder: (context) => [
+                                      PopupMenuItem(
+                                          value: "delete",
+                                          child: Text("Supprimer")),
+                                    ],
+                                    onSelected: (value) =>
+                                        _onCommentMenuItemSelected(
+                                            comment, value),
+                                  )
                                 ],
                               ),
                               Container(
@@ -225,8 +229,65 @@ class _VisitorScreenState extends State<VisitorScreen> {
     }
   }
 
+  void _delete(Comment comment) async {
+    print("_deleteComment()");
+    this.loading = true;
+    final user =
+        User.fromJson(jsonDecode(await storage.read(key: STORAGE_KEY_USER)));
+    final accessToken = await storage.read(key: STORAGE_KEY_ACCESS_TOKEN);
+    final event =
+        Event.fromJson(jsonDecode(await storage.read(key: STORAGE_KEY_EVENT)));
+    final response = await http.delete(
+        '${DotEnv().env[ENV_KEY_API_URL]}/${user.tenant}/events/${event.id}/visitors/$visitorId/comments/${comment.id}',
+        headers: {HttpHeaders.authorizationHeader: "Bearer $accessToken"});
+    if (response.statusCode == 204) {
+      print("\tsuccess");
+      this.commentController.text = '';
+      FocusScope.of(context).requestFocus(FocusNode());
+      setState(() {
+        visitor = ApiService().getAttendee(this.visitorId, true);
+      });
+    } else {
+      print(
+          "\tfailure, status code = ${response.statusCode} \n\t body : ${response.body}");
+      throw Exception('Cannot delete comment');
+    }
+    this.loading = false;
+  }
+
+  String _commentTitleLine(Comment comment) {
+    return " ${comment.authorFirstName} (${_toPrettyDate(comment.date)})";
+  }
+
   String _toPrettyDate(String date) {
     final d = DateTime.parse(date);
     return '${d.day}/${d.month} - ${d.hour}h${d.minute < 10 ? '0${d.minute}' : d.minute}';
+  }
+
+  void _onCommentMenuItemSelected(Comment comment, String value) {
+    switch (value) {
+      case "delete":
+        _confirmDeletion(comment);
+        break;
+    }
+  }
+
+  void _confirmDeletion(Comment comment) {
+    showDialog(
+        context: context,
+        builder: (_) =>
+            AlertDialog(title: Text("Supprimer la note?"), actions: [
+              FlatButton(
+                  child: Text("ANNULER"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  }),
+              FlatButton(
+                  child: Text("SUPPRIMER"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _delete(comment);
+                  })
+            ]));
   }
 }
