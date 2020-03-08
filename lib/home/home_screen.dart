@@ -3,7 +3,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:x_qrcode/auth/login_screen.dart';
 import 'package:x_qrcode/events/events_screen.dart';
 import 'package:x_qrcode/organization/organization_screen.dart';
-import 'package:x_qrcode/visitors/visitors_screen.dart';
 
 import '../constants.dart';
 
@@ -38,10 +37,6 @@ class _HomeScreenState extends State<HomeScreen> {
     if (token != null) {
       final user = await storage.read(key: STORAGE_KEY_USER);
       if (user != null) {
-        final event = await storage.read(key: STORAGE_KEY_EVENT);
-        if (event != null) {
-          return VisitorsScreen();
-        }
         return EventsScreen();
       }
       return OrganizationsScreen();

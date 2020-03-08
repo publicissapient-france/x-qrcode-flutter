@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:x_qrcode/common/app_drawer.dart';
 import 'package:x_qrcode/organization/user.dart';
 import 'package:x_qrcode/visitors/visitors_screen.dart';
 
@@ -33,68 +34,58 @@ class _EventsScreenState extends State<EventsScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    backgroundColor: Color.fromARGB(255, 45, 56, 75),
-    body: Padding(
-        padding: EdgeInsets.all(48),
-        child: FutureBuilder<List<Event>>(
-            future: events,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Column(
-                  children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.only(top: 64, bottom: 16),
-                      child: Text(
-                        '👌 Veuillez sélectionner l’événement.',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                    ListBody(
-                        children: snapshot.data
-                            .map((event) => GestureDetector(
-                          onTap: () async {
-                            await storage.write(
-                                key: STORAGE_KEY_EVENT,
-                                value: jsonEncode(event));
-                            Navigator.pushNamed(
-                                context, visitorRoute);
-                          },
-                          child: Card(
-                              elevation: 2,
-                              clipBehavior:
-                              Clip.antiAliasWithSaveLayer,
-                              child: Column(
-                                children: <Widget>[
-                                  Image.network(event.image),
-                                  Container(
-                                      margin: EdgeInsets.all(16),
-                                      child: Column(
-                                        children: [
-                                          Text(
-                                            event.name,
-                                            style: TextStyle(
-                                                fontWeight:
-                                                FontWeight
-                                                    .bold),
-                                          ),
-                                          Text(event.tagline),
-                                        ],
-                                      ))
-                                ],
-                              )),
-                        ))
-                            .toList()),
-                  ],
-                );
-              } else {
-                return Center(child: CircularProgressIndicator());
-              }
-            })),
-  );
+        appBar: AppBar(
+          title: Text('Evenements'),
+        ),
+        drawer: AppDrawer(),
+        body: Padding(
+            padding: EdgeInsets.all(16),
+            child: FutureBuilder<List<Event>>(
+                future: events,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return ListView.builder(
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (context, index) {
+                          Event event = snapshot.data[index];
+                          return GestureDetector(
+                              onTap: () async {
+                                await storage.write(
+                                    key: STORAGE_KEY_EVENT,
+                                    value: jsonEncode(event));
+                                Navigator.pushNamed(context, visitorRoute);
+                              },
+                              child: Card(
+                                elevation: 2,
+                                clipBehavior: Clip.antiAliasWithSaveLayer,
+                                child: Column(
+                                  children: <Widget>[
+                                    Image.network(event.image),
+                                    Container(
+                                        margin: EdgeInsets.all(16),
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              event.name,
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            Text(event.tagline),
+                                          ],
+                                        ))
+                                  ],
+                                ),
+                              ));
+                        });
+                  } else {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                })),
+      );
 
   Future<List<Event>> _getEventsByTenant() async {
     final user =
-    User.fromJson(jsonDecode(await storage.read(key: STORAGE_KEY_USER)));
+        User.fromJson(jsonDecode(await storage.read(key: STORAGE_KEY_USER)));
     final accessToken = await storage.read(key: STORAGE_KEY_ACCESS_TOKEN);
     final response = await http.get(
         '${DotEnv().env[ENV_KEY_API_URL]}/${user.tenant}/events',

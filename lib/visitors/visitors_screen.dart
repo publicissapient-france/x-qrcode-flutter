@@ -8,7 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:x_qrcode/common/app_drawer.dart';
 import 'package:x_qrcode/events/events_screen.dart';
 import 'package:x_qrcode/organization/user.dart';
 import 'package:x_qrcode/profile/profile_screen.dart';
@@ -40,7 +39,6 @@ class _VisitorsScreeState extends State<VisitorsScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      drawer: AppDrawer(),
       appBar: AppBar(
         title: Text('Visiteurs'),
       ),
