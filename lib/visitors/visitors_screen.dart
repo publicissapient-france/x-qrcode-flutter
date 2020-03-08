@@ -10,13 +10,13 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:x_qrcode/events/events_screen.dart';
 import 'package:x_qrcode/organization/user.dart';
-import 'package:x_qrcode/profile/profile_screen.dart';
+import 'package:x_qrcode/visitors/visitor_screen.dart';
 import 'package:x_qrcode/visitors/attendee.dart';
 
 import '../constants.dart';
 import 'consent_screen.dart';
 
-const visitorRoute = '/visitors';
+const visitorsRoute = '/visitors';
 
 class VisitorsScreen extends StatefulWidget {
   VisitorsScreen({Key key}) : super(key: key);
@@ -54,9 +54,9 @@ class _VisitorsScreeState extends State<VisitorsScreen> {
                         Attendee visitor = snapshot.data[index];
                         return GestureDetector(
                             onTap: () {
-                              Navigator.pushNamed(context, profileRoute,
+                              Navigator.pushNamed(context, visitorsRoute,
                                   arguments:
-                                      ProfileScreenArguments(visitor.id));
+                                      VisitorScreenArguments(visitor.id));
                             },
                             child: Card(
                               elevation: 2,
@@ -88,8 +88,8 @@ class _VisitorsScreeState extends State<VisitorsScreen> {
           arguments: ConsentScreenArguments(visitorId));
       if (visitorConsent == true) {
         this.visitors = _getVisitors();
-        Navigator.pushNamed(context, profileRoute,
-            arguments: ProfileScreenArguments(visitorId));
+        Navigator.pushNamed(context, visitorsRoute,
+            arguments: VisitorScreenArguments(visitorId));
       }
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {

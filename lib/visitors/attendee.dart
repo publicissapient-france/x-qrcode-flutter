@@ -3,15 +3,18 @@ class Attendee {
   final String firstName;
   final String lastName;
   final String email;
+  final bool checkIn;
   final List<Comment> comments;
 
-  Attendee(this.id, this.firstName, this.lastName, this.email, this.comments);
+  Attendee(this.id, this.firstName, this.lastName, this.email, this.checkIn,
+      this.comments);
 
   Attendee.fromJson(Map<String, dynamic> json)
       : id = json['attendee_id'],
         firstName = json['firstName'],
         lastName = json['lastName'],
         email = json['email'],
+        checkIn = json['checkIn'] != null ? true : false,
         comments = json['comments'] != null
             ? List<Comment>.from(
                 json['comments'].map((comment) => Comment.fromNetwork(comment)))

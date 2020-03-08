@@ -16,24 +16,24 @@ import 'package:x_qrcode/visitors/attendee.dart';
 
 import '../constants.dart';
 
-class ProfileScreenArguments {
+class VisitorScreenArguments {
   final String visitorId;
 
-  ProfileScreenArguments(this.visitorId);
+  VisitorScreenArguments(this.visitorId);
 }
 
-const profileRoute = '/profile';
+const visitorRoute = '/visitor';
 
-class ProfileScreen extends StatefulWidget {
+class VisitorScreen extends StatefulWidget {
   final String visitorId;
 
-  ProfileScreen({Key key, @required this.visitorId}) : super(key: key);
+  VisitorScreen({Key key, @required this.visitorId}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _ProfileScreenState(this.visitorId);
+  State<StatefulWidget> createState() => _VisitorScreenState(this.visitorId);
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _VisitorScreenState extends State<VisitorScreen> {
   final visitorId;
 
   final storage = FlutterSecureStorage();
@@ -41,7 +41,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<Attendee> visitor;
 
-  _ProfileScreenState(this.visitorId);
+  _VisitorScreenState(this.visitorId);
 
   bool loading = false;
 

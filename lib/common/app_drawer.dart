@@ -7,12 +7,14 @@ import 'package:x_qrcode/events/events_screen.dart';
 import 'package:x_qrcode/organization/user.dart';
 
 import '../constants.dart';
+import 'common_models.dart';
 
 class _AppDrawerData {
   final User user;
   final Event event;
+  final String mode;
 
-  _AppDrawerData(this.user, this.event);
+  _AppDrawerData(this.user, this.event, this.mode);
 }
 
 class AppDrawer extends StatefulWidget {
@@ -69,7 +71,9 @@ class _AppDrawerState extends State<AppDrawer> {
                                 child: Text('Sponsor'),
                               ),
                             ],
-                            onPressed: (index) {
+                            onPressed: (index) async {
+                              await storage.write(
+                                  key: STORAGE_KEY_MODE, value: MODE[index]);
                               setState(() {
                                 for (int i = 0; i < this.modes.length; i++) {
                                   this.modes[i] = false;
@@ -101,7 +105,8 @@ class _AppDrawerState extends State<AppDrawer> {
 
   Future<_AppDrawerData> _getData() async => _AppDrawerData(
       User.fromJson(jsonDecode(await storage.read(key: STORAGE_KEY_USER))),
-      Event.fromJson(jsonDecode(await storage.read(key: STORAGE_KEY_EVENT))));
+      Event.fromJson(jsonDecode(await storage.read(key: STORAGE_KEY_EVENT))),
+      await storage.read(key: STORAGE_KEY_MODE));
 
   _logout() async {
     await storage.deleteAll();

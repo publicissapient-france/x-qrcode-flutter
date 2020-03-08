@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:x_qrcode/attendees/attendees_screen.dart';
 import 'package:x_qrcode/common/app_drawer.dart';
+import 'package:x_qrcode/common/common_models.dart';
 import 'package:x_qrcode/organization/user.dart';
 import 'package:x_qrcode/visitors/visitors_screen.dart';
 
@@ -53,7 +55,12 @@ class _EventsScreenState extends State<EventsScreen> {
                                 await storage.write(
                                     key: STORAGE_KEY_EVENT,
                                     value: jsonEncode(event));
-                                Navigator.pushNamed(context, visitorRoute);
+                                String mode = await storage.read(key: STORAGE_KEY_MODE);
+                                if (mode == MODE_CHECK_IN) {
+                                  Navigator.pushNamed(context, attendeeRoute);
+                                } else {
+                                  Navigator.pushNamed(context, visitorsRoute);
+                                }
                               },
                               child: Card(
                                 elevation: 2,
