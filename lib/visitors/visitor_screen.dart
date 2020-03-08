@@ -230,7 +230,6 @@ class _VisitorScreenState extends State<VisitorScreen> {
   }
 
   void _delete(Comment comment) async {
-    print("_deleteComment()");
     this.loading = true;
     final user =
         User.fromJson(jsonDecode(await storage.read(key: STORAGE_KEY_USER)));
@@ -241,15 +240,13 @@ class _VisitorScreenState extends State<VisitorScreen> {
         '${DotEnv().env[ENV_KEY_API_URL]}/${user.tenant}/events/${event.id}/visitors/$visitorId/comments/${comment.id}',
         headers: {HttpHeaders.authorizationHeader: "Bearer $accessToken"});
     if (response.statusCode == 204) {
-      print("\tsuccess");
-      this.commentController.text = '';
       FocusScope.of(context).requestFocus(FocusNode());
+      Attendee attendee = await visitor;
+      attendee.comments.removeWhere((_comment) => _comment.id == comment.id);
       setState(() {
-        visitor = ApiService().getAttendee(this.visitorId, true);
+        visitor = Future.value(attendee);
       });
     } else {
-      print(
-          "\tfailure, status code = ${response.statusCode} \n\t body : ${response.body}");
       throw Exception('Cannot delete comment');
     }
     this.loading = false;
