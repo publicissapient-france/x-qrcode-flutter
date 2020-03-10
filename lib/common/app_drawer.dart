@@ -125,6 +125,6 @@ class _AppDrawerState extends State<AppDrawer> {
 
   _logout() async {
     await storage.deleteAll();
-    Navigator.pushNamed(context, loginRoute);
+    Navigator.of(context).pushNamedAndRemoveUntil(loginRoute, (_) => false);
   }
 }
