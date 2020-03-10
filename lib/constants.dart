@@ -3,6 +3,7 @@ const APP_NAMESPACE = 'http://x-qrcode.techx.fr';
 const STORAGE_KEY_ACCESS_TOKEN = 'st_access_token';
 const STORAGE_KEY_USER = 'st_user';
 const STORAGE_KEY_EVENT = 'st_event';
+const STORAGE_KEY_MODE = 'st_mode';
 
 const ENV_KEY_OAUTH_AUTH_URL = 'OAUTH_AUTH_URL';
 const ENV_KEY_OAUTH_AUDIENCE = 'OAUTH_AUDIENCE';

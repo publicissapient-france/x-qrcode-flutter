@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:x_qrcode/events/events_screen.dart';
 import 'package:x_qrcode/home/home_screen.dart';
-import 'package:x_qrcode/profile/profile_screen.dart';
+import 'package:x_qrcode/visitors/visitor_screen.dart';
 import 'package:x_qrcode/visitors/consent_screen.dart';
 import 'package:x_qrcode/visitors/visitors_screen.dart';
 
+import 'attendees/attendees_screen.dart';
 import 'auth/login_screen.dart';
 import 'organization/organization_screen.dart';
 
@@ -28,17 +29,19 @@ class XQRCodeApp extends StatelessWidget {
           case organisationsRoute:
           case eventsRoute:
             return MaterialPageRoute(builder: (_) => HomeScreen());
-          case visitorRoute:
+          case visitorsRoute:
             return MaterialPageRoute(builder: (_) => VisitorsScreen());
+          case attendeeRoute:
+            return MaterialPageRoute(builder: (_) => AttendeesScreen());
           case consentRoute:
             return MaterialPageRoute(builder: (_) {
               final ConsentScreenArguments args = settings.arguments;
               return ConsentScreen(visitorId: args.visitorId);
             });
-          case profileRoute:
+          case visitorRoute:
             return MaterialPageRoute(builder: (_) {
-              final ProfileScreenArguments args = settings.arguments;
-              return ProfileScreen(visitorId: args.visitorId);
+              final VisitorScreenArguments args = settings.arguments;
+              return VisitorScreen(visitorId: args.visitorId);
             });
           default:
             return MaterialPageRoute(builder: (_) => Container());

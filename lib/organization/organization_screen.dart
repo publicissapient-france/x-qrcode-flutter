@@ -6,6 +6,7 @@ import 'package:flutter_auth0/flutter_auth0.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:x_qrcode/common/common_models.dart';
 import 'package:x_qrcode/events/events_screen.dart';
 import 'package:x_qrcode/organization/user.dart';
 
@@ -73,10 +74,16 @@ class _OrganizationsScreenState extends State<OrganizationsScreen> {
                                         snapshot.data.firstName,
                                         snapshot.data.lastName,
                                         tenant,
-                                        company);
+                                        company,
+                                        snapshot.data.roles);
                                     await storage.write(
                                         key: STORAGE_KEY_USER,
                                         value: jsonEncode(user));
+                                    if (user.roles.contains(ROLE_ADMIN)) {
+                                      await storage.write(
+                                          key: STORAGE_KEY_MODE,
+                                          value: MODE_CHECK_IN);
+                                    }
                                     Navigator.pushNamed(context, eventsRoute);
                                   },
                                   child: Text(tenant),
@@ -93,8 +100,7 @@ class _OrganizationsScreenState extends State<OrganizationsScreen> {
       );
 
   Future<UserInfo> _getUserInfo() async {
-    final accessToken =
-    await storage.read(key: STORAGE_KEY_ACCESS_TOKEN);
+    final accessToken = await storage.read(key: STORAGE_KEY_ACCESS_TOKEN);
     final auth0Auth = Auth0Auth(auth0.auth.clientId, auth0.auth.client.baseUrl,
         bearer: accessToken);
     final info = await auth0Auth.getUserInfo();
@@ -102,15 +108,14 @@ class _OrganizationsScreenState extends State<OrganizationsScreen> {
   }
 
   Future<Company> _getCompany(tenant) async {
-    final accessToken =
-    await storage.read(key: STORAGE_KEY_ACCESS_TOKEN);
-    final response = await http.get(
-        '${DotEnv().env[ENV_KEY_API_URL]}/$tenant/companies/my-company',
-        headers: {HttpHeaders.authorizationHeader: "Bearer $accessToken"});
-    if (response.statusCode == 200) {
+    final accessToken = await storage.read(key: STORAGE_KEY_ACCESS_TOKEN);
+    try {
+      final response = await http.get(
+          '${DotEnv().env[ENV_KEY_API_URL]}/$tenant/companies/my-company',
+          headers: {HttpHeaders.authorizationHeader: "Bearer $accessToken"});
       return Company.fromJson(jsonDecode(response.body));
-    } else {
-      throw Exception('Cannot get company');
+    } catch (error) {
+      throw Exception('Cannot get company: ${error.toString()}');
     }
   }
 }
@@ -118,13 +123,16 @@ class _OrganizationsScreenState extends State<OrganizationsScreen> {
 class UserInfo {
   final String firstName;
   final String lastName;
+  final List<String> roles;
   final List<String> tenants;
 
-  UserInfo(this.firstName, this.lastName, this.tenants);
+  UserInfo(this.firstName, this.lastName, this.roles, this.tenants);
 
   UserInfo.fromJson(Map<dynamic, dynamic> json)
       : firstName = json['$APP_NAMESPACE/claims/user_metadata']['firstName'],
         lastName = json['$APP_NAMESPACE/claims/user_metadata']['lastName'],
+        roles = List<String>.from(
+            json['$APP_NAMESPACE/claims/app_metadata']['roles']),
         tenants = List<String>.from(
             json['$APP_NAMESPACE/claims/app_metadata']['tenants']);
 }
