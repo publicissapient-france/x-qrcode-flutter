@@ -12,7 +12,8 @@ import 'common_models.dart';
 class _AppDrawerData {
   final User user;
   final Event event;
-  final String mode;
+
+  String mode;
 
   _AppDrawerData(this.user, this.event, this.mode);
 }
@@ -55,34 +56,8 @@ class _AppDrawerState extends State<AppDrawer> {
                                 style: TextStyle(fontSize: 40),
                               ),
                             )),
-                        Container(
-                          alignment: Alignment.topLeft,
-                          margin: EdgeInsets.only(top: 16, left: 16, right: 16),
-                          child: ToggleButtons(
-                            borderRadius: BorderRadius.all(Radius.circular(8)),
-                            isSelected: modes,
-                            children: <Widget>[
-                              Padding(
-                                padding: EdgeInsets.only(left: 16, right: 16),
-                                child: Text('Check-in'),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(left: 16, right: 16),
-                                child: Text('Sponsor'),
-                              ),
-                            ],
-                            onPressed: (index) async {
-                              await storage.write(
-                                  key: STORAGE_KEY_MODE, value: MODE[index]);
-                              setState(() {
-                                for (int i = 0; i < this.modes.length; i++) {
-                                  this.modes[i] = false;
-                                }
-                                this.modes[index] = !this.modes[index];
-                              });
-                            },
-                          ),
-                        ),
+                        _buildModeToggleButtons(
+                            snapshot.data.user.roles, snapshot.data),
                       ],
                     ),
                   ),
@@ -102,6 +77,46 @@ class _AppDrawerState extends State<AppDrawer> {
           },
         ),
       );
+
+  _buildModeToggleButtons(List<String> roles, _AppDrawerData data) {
+    if (roles.contains(ROLE_ADMIN)) {
+      if (data.mode == MODE_CHECK_IN) {
+        modes[0] = true;
+        modes[1] = false;
+      } else {
+        modes[0] = false;
+        modes[1] = true;
+      }
+      return Container(
+        alignment: Alignment.topLeft,
+        margin: EdgeInsets.only(top: 16, left: 16, right: 16),
+        child: ToggleButtons(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+          isSelected: modes,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(left: 16, right: 16),
+              child: Text('Check-in'),
+            ),
+            Padding(
+              padding: EdgeInsets.only(left: 16, right: 16),
+              child: Text('Sponsor'),
+            ),
+          ],
+          onPressed: (index) async {
+            await storage.write(key: STORAGE_KEY_MODE, value: MODE[index]);
+            setState(() {
+              modes[index] = true;
+              modes[index + 1 % 1] = false;
+              data.mode = index == 0 ? MODE_CHECK_IN : MODE_SPONSOR;
+            });
+            Navigator.of(context).pop();
+          },
+        ),
+      );
+    }
+    return Container();
+  }
 
   Future<_AppDrawerData> _getData() async => _AppDrawerData(
       User.fromJson(jsonDecode(await storage.read(key: STORAGE_KEY_USER))),
