@@ -147,16 +147,30 @@ class _VisitorScreenState extends State<VisitorScreen> {
                       delegate: SliverChildBuilderDelegate((context, index) {
                     Comment comment = snapshot.data.comments[index];
                     return Card(
-                        elevation: 2,
-                        margin: EdgeInsets.only(
-                            top: 8,
-                            right: 8,
-                            left: 8,
-                            bottom: index == snapshot.data.comments.length - 1
-                                ? 8
-                                : 0),
-                        child: Padding(
-                          padding: EdgeInsets.all(8),
+                      elevation: 2,
+                      margin: EdgeInsets.only(
+                          top: 8,
+                          right: 8,
+                          left: 8,
+                          bottom: index == snapshot.data.comments.length - 1
+                              ? 8
+                              : 0),
+                      child: Stack(children: <Widget>[
+                        Positioned(
+                            right: 0,
+                            top: 0,
+                            child: PopupMenuButton<String>(
+                                icon: Icon(Icons.more_vert, color: Colors.grey),
+                                itemBuilder: (context) => [
+                                      PopupMenuItem(
+                                          value: "delete",
+                                          child: Text("Supprimer")),
+                                    ],
+                                onSelected: (value) =>
+                                    _onCommentMenuItemSelected(
+                                        comment, value))),
+                        Padding(
+                          padding: EdgeInsets.all(16),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
@@ -168,18 +182,6 @@ class _VisitorScreenState extends State<VisitorScreen> {
                                   ),
                                   Expanded(
                                       child: Text(_commentTitleLine(comment))),
-                                  PopupMenuButton<String>(
-                                    icon: Icon(Icons.more_vert,
-                                        color: Colors.grey),
-                                    itemBuilder: (context) => [
-                                      PopupMenuItem(
-                                          value: "delete",
-                                          child: Text("Supprimer")),
-                                    ],
-                                    onSelected: (value) =>
-                                        _onCommentMenuItemSelected(
-                                            comment, value),
-                                  )
                                 ],
                               ),
                               Container(
@@ -188,7 +190,9 @@ class _VisitorScreenState extends State<VisitorScreen> {
                               )
                             ],
                           ),
-                        ));
+                        )
+                      ]),
+                    );
                   }, childCount: snapshot.data.comments.length))
                 ],
               );
