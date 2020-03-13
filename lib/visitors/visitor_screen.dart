@@ -168,7 +168,7 @@ class _VisitorScreenState extends State<VisitorScreen> {
                                     ],
                                 onSelected: (value) =>
                                     _onCommentMenuItemSelected(
-                                        comment, value))),
+                                        snapshot, comment, value))),
                         Padding(
                           padding: EdgeInsets.all(16),
                           child: Column(
@@ -233,7 +233,7 @@ class _VisitorScreenState extends State<VisitorScreen> {
     }
   }
 
-  void _delete(Comment comment) async {
+  void _delete(AsyncSnapshot snapshot, Comment comment) async {
     this.loading = true;
     final user =
         User.fromJson(jsonDecode(await storage.read(key: STORAGE_KEY_USER)));
@@ -245,10 +245,8 @@ class _VisitorScreenState extends State<VisitorScreen> {
         headers: {HttpHeaders.authorizationHeader: "Bearer $accessToken"});
     if (response.statusCode == 204) {
       FocusScope.of(context).requestFocus(FocusNode());
-      Attendee attendee = await visitor;
-      attendee.comments.removeWhere((_comment) => _comment.id == comment.id);
       setState(() {
-        visitor = Future.value(attendee);
+        snapshot.data.comments.removeWhere((_comment) => _comment.id == comment.id);
       });
     } else {
       throw Exception('Cannot delete comment');
@@ -265,15 +263,15 @@ class _VisitorScreenState extends State<VisitorScreen> {
     return '${d.day}/${d.month} - ${d.hour}h${d.minute < 10 ? '0${d.minute}' : d.minute}';
   }
 
-  void _onCommentMenuItemSelected(Comment comment, String value) {
+  void _onCommentMenuItemSelected(AsyncSnapshot snapshot, Comment comment, String value) {
     switch (value) {
       case "delete":
-        _confirmDeletion(comment);
+        _confirmDeletion(snapshot, comment);
         break;
     }
   }
 
-  void _confirmDeletion(Comment comment) {
+  void _confirmDeletion(AsyncSnapshot snapshot, Comment comment) {
     showDialog(
         context: context,
         builder: (_) =>
@@ -287,7 +285,7 @@ class _VisitorScreenState extends State<VisitorScreen> {
                   child: Text("SUPPRIMER"),
                   onPressed: () {
                     Navigator.of(context).pop();
-                    _delete(comment);
+                    _delete(snapshot, comment);
                   })
             ]));
   }
