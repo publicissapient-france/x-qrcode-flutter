@@ -5,15 +5,3 @@
 ## Presentation
 
 * 🇫🇷[X-QRCode](https://docs.google.com/presentation/d/1ohPtrCCCnyIZNdWt6itIh62XPApbaiJRkS0kK8m_SvA/edit?usp=sharing)
-
-## How to contribute
-
-You have to define environment variable in .env file (do not commit).
-
-Required variables:
-
-* AUTH_URL
-* CLIENT_ID
-* REALM
-
-💡 You can find those variables on X-QRCode web app.
