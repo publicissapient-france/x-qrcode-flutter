@@ -147,15 +147,29 @@ class _VisitorScreenState extends State<VisitorScreen> {
                       delegate: SliverChildBuilderDelegate((context, index) {
                     Comment comment = snapshot.data.comments[index];
                     return Card(
-                        elevation: 2,
-                        margin: EdgeInsets.only(
-                            top: 8,
-                            right: 8,
-                            left: 8,
-                            bottom: index == snapshot.data.comments.length - 1
-                                ? 8
-                                : 0),
-                        child: Padding(
+                      elevation: 2,
+                      margin: EdgeInsets.only(
+                          top: 8,
+                          right: 8,
+                          left: 8,
+                          bottom: index == snapshot.data.comments.length - 1
+                              ? 8
+                              : 0),
+                      child: Stack(children: <Widget>[
+                        Positioned(
+                            right: 0,
+                            top: 0,
+                            child: PopupMenuButton<String>(
+                                icon: Icon(Icons.more_vert, color: Colors.grey),
+                                itemBuilder: (context) => [
+                                      PopupMenuItem(
+                                          value: "delete",
+                                          child: Text("Supprimer")),
+                                    ],
+                                onSelected: (value) =>
+                                    _onCommentMenuItemSelected(
+                                        snapshot, comment, value))),
+                        Padding(
                           padding: EdgeInsets.all(16),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -167,15 +181,7 @@ class _VisitorScreenState extends State<VisitorScreen> {
                                     color: Colors.grey,
                                   ),
                                   Expanded(
-                                    child: Text(
-                                      ' ${comment.authorFirstName}',
-                                    ),
-                                  ),
-                                  comment.date != null
-                                      ? Text(
-                                          _toPrettyDate(comment.date),
-                                        )
-                                      : Container()
+                                      child: Text(_commentTitleLine(comment))),
                                 ],
                               ),
                               Container(
@@ -184,7 +190,9 @@ class _VisitorScreenState extends State<VisitorScreen> {
                               )
                             ],
                           ),
-                        ));
+                        )
+                      ]),
+                    );
                   }, childCount: snapshot.data.comments.length))
                 ],
               );
@@ -225,8 +233,60 @@ class _VisitorScreenState extends State<VisitorScreen> {
     }
   }
 
+  void _delete(AsyncSnapshot snapshot, Comment comment) async {
+    this.loading = true;
+    final user =
+        User.fromJson(jsonDecode(await storage.read(key: STORAGE_KEY_USER)));
+    final accessToken = await storage.read(key: STORAGE_KEY_ACCESS_TOKEN);
+    final event =
+        Event.fromJson(jsonDecode(await storage.read(key: STORAGE_KEY_EVENT)));
+    final response = await http.delete(
+        '${DotEnv().env[ENV_KEY_API_URL]}/${user.tenant}/events/${event.id}/visitors/$visitorId/comments/${comment.id}',
+        headers: {HttpHeaders.authorizationHeader: "Bearer $accessToken"});
+    if (response.statusCode == 204) {
+      FocusScope.of(context).requestFocus(FocusNode());
+      setState(() {
+        snapshot.data.comments.removeWhere((_comment) => _comment.id == comment.id);
+      });
+    } else {
+      throw Exception('Cannot delete comment');
+    }
+    this.loading = false;
+  }
+
+  String _commentTitleLine(Comment comment) {
+    return " ${comment.authorFirstName} (${_toPrettyDate(comment.date)})";
+  }
+
   String _toPrettyDate(String date) {
     final d = DateTime.parse(date);
     return '${d.day}/${d.month} - ${d.hour}h${d.minute < 10 ? '0${d.minute}' : d.minute}';
+  }
+
+  void _onCommentMenuItemSelected(AsyncSnapshot snapshot, Comment comment, String value) {
+    switch (value) {
+      case "delete":
+        _confirmDeletion(snapshot, comment);
+        break;
+    }
+  }
+
+  void _confirmDeletion(AsyncSnapshot snapshot, Comment comment) {
+    showDialog(
+        context: context,
+        builder: (_) =>
+            AlertDialog(title: Text("Supprimer la note?"), actions: [
+              FlatButton(
+                  child: Text("ANNULER"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  }),
+              FlatButton(
+                  child: Text("SUPPRIMER"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _delete(snapshot, comment);
+                  })
+            ]));
   }
 }
