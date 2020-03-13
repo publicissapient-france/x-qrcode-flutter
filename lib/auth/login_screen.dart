@@ -100,7 +100,8 @@ class _LoginScreenState extends State<LoginScreen> {
       });
       final token = response['access_token'];
       await storage.write(key: STORAGE_KEY_ACCESS_TOKEN, value: token);
-      Navigator.pushNamed(context, organisationsRoute);
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil(organisationsRoute, (_) => false);
     } catch (e) {
       print(e);
     }

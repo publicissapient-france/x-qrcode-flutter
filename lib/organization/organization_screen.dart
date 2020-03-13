@@ -84,7 +84,9 @@ class _OrganizationsScreenState extends State<OrganizationsScreen> {
                                           key: STORAGE_KEY_MODE,
                                           value: MODE_CHECK_IN);
                                     }
-                                    Navigator.pushNamed(context, eventsRoute);
+                                    Navigator.of(context)
+                                        .pushNamedAndRemoveUntil(
+                                            eventsRoute, (_) => false);
                                   },
                                   child: Text(tenant),
                                 ))
