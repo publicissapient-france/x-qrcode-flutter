@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:x_qrcode/constants.dart';
 import 'package:x_qrcode/events/events_screen.dart';
 import 'package:x_qrcode/home/home_screen.dart';
 import 'package:x_qrcode/visitors/visitor_screen.dart';
@@ -21,8 +22,10 @@ class XQRCodeApp extends StatelessWidget {
     return MaterialApp(
       title: 'X-QRCode',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+          primaryColor: Color(PRIMARY_COLOR),
+          cursorColor: Color(PRIMARY_COLOR),
+          textTheme: TextTheme(subhead: TextStyle(fontSize: 14)),
+          fontFamily: 'FuturaNext'),
       onGenerateRoute: (settings) {
         switch (settings.name) {
           case loginRoute:

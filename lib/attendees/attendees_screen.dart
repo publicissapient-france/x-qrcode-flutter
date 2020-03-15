@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:x_qrcode/common/circle_gravatar.dart';
 import 'package:x_qrcode/events/events_screen.dart';
 import 'package:x_qrcode/organization/user.dart';
 import 'package:x_qrcode/visitors/attendee.dart';
@@ -38,8 +39,9 @@ class _AttendeesScreeState extends State<AttendeesScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
+      backgroundColor: Color(BACKGROUND_COLOR),
       appBar: AppBar(
-        title: Text('Check-in'),
+        title: Text('Check-in'.toUpperCase()),
       ),
       body: FutureBuilder<List<Attendee>>(
           future: attendees,
@@ -67,17 +69,24 @@ class _AttendeesScreeState extends State<AttendeesScreen> {
                           } catch (ignored) {}
                         },
                         child: Card(
-                          elevation: 2,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4)),
                           child: Container(
-                            decoration: BoxDecoration(color: Colors.white),
                             child: ListTile(
                               title: Text(
                                   "${attendee.firstName} ${attendee.lastName}"),
+                              leading: CircleGravatar(
+                                uid: attendee.email,
+                                placeholder:
+                                    '${attendee.firstName.substring(0, 1)}${attendee.lastName.substring(0, 1)}',
+                              ),
                               trailing: Icon(
                                 Icons.check_circle,
+                                size: 30,
                                 color: attendee.checkIn
-                                    ? Colors.green
-                                    : Colors.grey,
+                                    ? Color(PRIMARY_COLOR)
+                                    : Color(0xFFD3D3D3),
                               ),
                             ),
                           ),
@@ -89,8 +98,13 @@ class _AttendeesScreeState extends State<AttendeesScreen> {
           }),
       floatingActionButton: Builder(
           builder: (ctx) => FloatingActionButton(
+                elevation: 0,
+                backgroundColor: Color(PRIMARY_COLOR),
                 onPressed: () => _scanQrCode(ctx),
-                child: Icon(Icons.camera_alt),
+                child: Icon(Icons.crop_free),
+                shape: RoundedRectangleBorder(
+                    side: BorderSide(color: Colors.white, width: 4),
+                    borderRadius: BorderRadius.circular(45)),
               )));
 
   void _scanQrCode(ctx) async {
@@ -203,6 +217,7 @@ class _AttendeesScreeState extends State<AttendeesScreen> {
       for (var rawEvent in _rawAttendees) {
         _events.add(Attendee.fromJson(rawEvent));
       }
+      _events.sort((a, b) => a.firstName.compareTo(b.firstName));
       return _events;
     } else {
       throw Exception('Failed to load attendees');

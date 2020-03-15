@@ -36,12 +36,13 @@ class _EventsScreenState extends State<EventsScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
+        backgroundColor: Color(BACKGROUND_COLOR),
         appBar: AppBar(
-          title: Text('Evenements'),
+          title: Text('Evenements'.toUpperCase()),
         ),
         drawer: AppDrawer(),
         body: Padding(
-            padding: EdgeInsets.all(16),
+            padding: EdgeInsets.all(8),
             child: FutureBuilder<List<Event>>(
                 future: events,
                 builder: (context, snapshot) {
@@ -55,7 +56,8 @@ class _EventsScreenState extends State<EventsScreen> {
                                 await storage.write(
                                     key: STORAGE_KEY_EVENT,
                                     value: jsonEncode(event));
-                                String mode = await storage.read(key: STORAGE_KEY_MODE);
+                                String mode =
+                                    await storage.read(key: STORAGE_KEY_MODE);
                                 if (mode == MODE_CHECK_IN) {
                                   Navigator.pushNamed(context, attendeeRoute);
                                 } else {
@@ -63,19 +65,29 @@ class _EventsScreenState extends State<EventsScreen> {
                                 }
                               },
                               child: Card(
-                                elevation: 2,
-                                clipBehavior: Clip.antiAliasWithSaveLayer,
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(4)),
                                 child: Column(
                                   children: <Widget>[
-                                    Image.network(event.image),
+                                    Image.network(
+                                      event.image,
+                                      height: 120,
+                                    ),
                                     Container(
-                                        margin: EdgeInsets.all(16),
+                                        margin: EdgeInsets.only(
+                                          top: 0,
+                                          left: 16,
+                                          right: 16,
+                                          bottom: 16,
+                                        ),
                                         child: Column(
                                           children: [
                                             Text(
                                               event.name,
                                               style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
                                             Text(event.tagline),
                                           ],

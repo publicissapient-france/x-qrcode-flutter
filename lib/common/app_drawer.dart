@@ -2,8 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:x_qrcode/auth/login_screen.dart';
-import 'package:x_qrcode/events/events_screen.dart';
+import 'package:x_qrcode/common/circle_gravatar.dart';
 import 'package:x_qrcode/organization/user.dart';
 
 import '../constants.dart';
@@ -19,56 +20,78 @@ class _AppDrawerState extends State<AppDrawer> {
   final modes = List.generate(2, (_) => false);
 
   Future<User> fUser;
-  Future<Event> fEvent;
   Future<String> fMode;
 
   @override
   void initState() {
     fUser = _getUser();
-    fEvent = _getEvent();
     fMode = _getMode();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) => Drawer(
-        child: Column(
+        child: ListView(
           children: <Widget>[
-            Expanded(
-              child: ListView(
-                children: <Widget>[
-                  _buildUserAccountsDrawerHeader(),
-                  _buildModeToggleButtons(),
-                ],
-              ),
+            _buildHeader(),
+            ListTile(
+              title: Center(child: _buildUserInfo()),
             ),
-            Container(
-              alignment: Alignment.bottomLeft,
-              padding: EdgeInsets.all(16),
-              child: RaisedButton.icon(
-                icon: Icon(Icons.exit_to_app),
-                label: Text('Se déconnecter'),
-                onPressed: _logout,
-              ),
-            ),
+            _buildModeToggleButtons(),
           ],
         ),
       );
 
-  _buildUserAccountsDrawerHeader() => FutureBuilder(
+  _buildHeader() => FutureBuilder(
       future: fUser,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return UserAccountsDrawerHeader(
-              accountName: Text(
-                  "${snapshot.data.firstName} ${snapshot.data.lastName} - ${snapshot.data.company.name}"),
-              accountEmail: _buildEventName(),
-              currentAccountPicture: CircleAvatar(
-                child: Text(
-                  snapshot.data.firstName.substring(0, 1),
-                  style: TextStyle(fontSize: 40),
+          User user = snapshot.data;
+          return Container(
+            height: 120,
+            child: Stack(
+              children: <Widget>[
+                Container(
+                  height: 80,
+                  color: Color(0xFFEDEDED),
                 ),
-              ));
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Color(0xFF707070),
+                      shape: BoxShape.circle,
+                    ),
+                    padding: EdgeInsets.all(1),
+                    child: CircleGravatar(
+                      placeholder: '${user.firstName.substring(0, 1)}${user.lastName.substring(0, 1)}',
+                      uid: user.email,
+                      radius: 42
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 56,
+                  right: 16,
+                  child: Container(
+                      height: 32,
+                      width: 32,
+                      margin: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                          color: Color(PRIMARY_COLOR),
+                          borderRadius: BorderRadius.circular(24)),
+                      child: IconButton(
+                        padding: EdgeInsets.all(0),
+                        onPressed: _logout,
+                        icon: SvgPicture.asset(
+                          'images/disconnect.svg',
+                          color: Colors.white,
+                        ),
+                      )),
+                ),
+              ],
+            ),
+          );
         }
         return Container();
       });
@@ -88,19 +111,25 @@ class _AppDrawerState extends State<AppDrawer> {
                 modes[1] = true;
               }
               return Container(
-                alignment: Alignment.topLeft,
-                margin: EdgeInsets.only(top: 16, left: 16, right: 16),
+                margin: EdgeInsets.only(top: 48, left: 8, right: 8),
+                height: 40,
+                alignment: Alignment.center,
                 child: ToggleButtons(
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                  borderColor: Color(0xFFCCCCCC),
+                  selectedBorderColor: Color(PRIMARY_COLOR),
+                  selectedColor: Colors.white,
+                  fillColor: Color(PRIMARY_COLOR),
+                  color: Colors.black,
+                  borderRadius: BorderRadius.all(Radius.circular(4)),
                   isSelected: modes,
                   children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(left: 16, right: 16),
-                      child: Text('Check-in'),
+                    Container(
+                      margin: EdgeInsets.only(left: 16, right: 16),
+                      child: Text('Check-in'.toUpperCase()),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 16, right: 16),
-                      child: Text('Sponsor'),
+                    Container(
+                      margin: EdgeInsets.only(left: 16, right: 16),
+                      child: Text('Sponsor'.toUpperCase()),
                     ),
                   ],
                   onPressed: (index) async {
@@ -121,16 +150,26 @@ class _AppDrawerState extends State<AppDrawer> {
         },
       );
 
-  FutureBuilder<Event> _buildEventName() {
-    return FutureBuilder(
-        future: fEvent,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return Text(snapshot.data.name);
-          }
-          return Text('');
-        });
-  }
+  FutureBuilder<User> _buildUserInfo() => FutureBuilder(
+      future: fUser,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Padding(
+              padding: EdgeInsets.only(top: 32),
+              child: Column(children: <Widget>[
+                Text(
+                  '${snapshot.data.firstName} ${snapshot.data.lastName}'
+                      .toUpperCase(),
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 8),
+                  child: Text('${snapshot.data.email}'),
+                )
+              ]));
+        }
+        return Text('');
+      });
 
   _logout() async {
     await storage.deleteAll();
@@ -139,14 +178,6 @@ class _AppDrawerState extends State<AppDrawer> {
 
   Future<User> _getUser() async =>
       User.fromJson(jsonDecode(await storage.read(key: STORAGE_KEY_USER)));
-
-  Future<Event> _getEvent() async {
-    final event = await storage.read(key: STORAGE_KEY_EVENT);
-    if (event != null) {
-      return Event.fromJson(jsonDecode(event));
-    }
-    return null;
-  }
 
   Future<String> _getMode() async => await storage.read(key: STORAGE_KEY_MODE);
 }

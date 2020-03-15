@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_auth0/flutter_auth0.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -41,49 +43,86 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      backgroundColor: Color.fromARGB(255, 45, 56, 75),
-      body: Padding(
-        padding: EdgeInsets.only(left: 16, right: 16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        body: Row(
           children: <Widget>[
-            Padding(
-                padding: EdgeInsets.only(bottom: 16),
-                child:
-                    SvgPicture.asset('images/xqrcode_logo.svg', height: 150)),
-            TextFormField(
-              controller: usernameController,
-              decoration: InputDecoration(
-                enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white)),
-                labelText: "E-mail",
-                labelStyle: TextStyle(color: Colors.white),
-              ),
-              style: TextStyle(color: Colors.white),
+            Expanded(
+              flex: 2,
+              child: Container(),
             ),
-            TextFormField(
-              controller: passwordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                  enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white)),
-                  labelText: "Mot de passe",
-                  labelStyle: TextStyle(color: Colors.white)),
-              style: TextStyle(color: Colors.white),
-            ),
-            Padding(
-                padding: EdgeInsets.only(top: 32),
-                child: RaisedButton(
-                  child: Text(
-                    "Se connecter",
-                    style: TextStyle(color: Colors.white),
+            Expanded(
+              flex: 6,
+              child: ListView(
+                children: <Widget>[
+                  Container(
+                    height: MediaQuery.of(context).size.height * .1,
                   ),
-                  onPressed: () => onPressed(),
-                  color: Colors.blue,
-                )),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        flex: 8,
+                        child: SvgPicture.asset(
+                          'images/logo_xqrcode.svg',
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 8),
+                          child: SvgPicture.asset(
+                            'images/logo_mark.svg',
+                            color: Color(PRIMARY_COLOR),
+                            height: 120,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                  TextFormField(
+                    controller: usernameController,
+                    decoration: InputDecoration(
+                        labelText: "E-mail",
+                        contentPadding: EdgeInsets.only(top: 8, bottom: 4)),
+                  ),
+                  Padding(
+                      padding: EdgeInsets.only(top: 8),
+                      child: TextFormField(
+                          controller: passwordController,
+                          obscureText: true,
+                          decoration: InputDecoration(
+                              labelText: "Mot de passe",
+                              contentPadding:
+                                  EdgeInsets.only(top: 8, bottom: 4)))),
+                  SizedBox(
+                      width: double.infinity,
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 40),
+                        child: FlatButton(
+                          color: Color(PRIMARY_COLOR),
+                          child: Text(
+                            "Suivant".toUpperCase(),
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          onPressed: () => onPressed(),
+                        ),
+                      )),
+                  Container(
+                    height: MediaQuery.of(context).size.height * .15,
+                  ),
+                  Image.asset(
+                    'images/logo_pse.png',
+                    height: 120,
+                  )
+                ],
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: Container(),
+            ),
           ],
         ),
-      ));
+      );
 
   void onPressed() {
     _connect(usernameController.text, passwordController.text);
