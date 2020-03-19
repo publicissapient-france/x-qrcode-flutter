@@ -9,7 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_svg: ^0.15.0
+  flutter_svg: ^0.17.3+1
   flutter_auth0: 0.5.0
   flutter_secure_storage: 3.3.1+1
   flutter_dotenv: ^2.1.0
@@ -25,5 +25,12 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - images/xqrcode_logo.svg
+    - images/logo_xqrcode.svg
+    - images/logo_pse.png
+    - images/logo_mark.svg
     - .env
+    - images/disconnect.svg
+  fonts:
+    - family: FuturaNext
+      fonts:
+        - asset: fonts/FuturaNext-Book.ttf
