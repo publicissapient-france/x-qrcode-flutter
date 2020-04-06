@@ -27,85 +27,120 @@ class AttendeesScreen extends StatefulWidget {
 
 class _AttendeesScreeState extends State<AttendeesScreen> {
   final storage = FlutterSecureStorage();
+  final searchTextEditingController = TextEditingController();
 
-  Future<List<Attendee>> attendees;
+  List<Attendee> attendees;
+
+  List<Attendee> filteredAttendees;
+
   String barcode;
 
   @override
   void initState() {
     super.initState();
-    attendees = _getAttendees();
+    searchTextEditingController.addListener(_searchAttendees);
+    _loadAttendees();
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-      backgroundColor: Color(BACKGROUND_COLOR),
-      appBar: AppBar(
-        title: Text('Check-in'.toUpperCase()),
-      ),
-      body: FutureBuilder<List<Attendee>>(
-          future: attendees,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return ListView.builder(
-                  padding: EdgeInsets.all(8),
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (context, index) {
-                    Attendee attendee = snapshot.data[index];
-                    return GestureDetector(
-                        onTap: () async {
-                          try {
-                            bool check = await _toggleCheck(
-                                attendee.id, !attendee.checkIn);
-                            setState(() {
-                              snapshot.data[index] = Attendee(
-                                  attendee.id,
-                                  attendee.firstName,
-                                  attendee.lastName,
-                                  attendee.email,
-                                  check,
-                                  attendee.comments);
-                            });
-                          } catch (ignored) {}
-                        },
-                        child: Card(
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4)),
-                          child: Container(
-                            child: ListTile(
-                              title: Text(
-                                  "${attendee.firstName} ${attendee.lastName}"),
-                              leading: CircleGravatar(
-                                uid: attendee.email,
-                                placeholder:
-                                    '${attendee.firstName.substring(0, 1)}${attendee.lastName.substring(0, 1)}',
-                              ),
-                              trailing: Icon(
-                                Icons.check_circle,
-                                size: 30,
-                                color: attendee.checkIn
-                                    ? Color(PRIMARY_COLOR)
-                                    : Color(0xFFD3D3D3),
-                              ),
+  void dispose() {
+    searchTextEditingController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Widget body;
+    if (filteredAttendees != null) {
+      body = Column(
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.all(12),
+            decoration:
+                BoxDecoration(shape: BoxShape.rectangle, color: Colors.white),
+            child: TextField(
+              controller: searchTextEditingController,
+              textInputAction: TextInputAction.search,
+              textCapitalization: TextCapitalization.words,
+              decoration: InputDecoration(
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.only(top: 16),
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: Colors.black,
+                  ),
+                  hintText: 'Rechercher...'),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+                padding: EdgeInsets.all(8),
+                itemCount: filteredAttendees.length,
+                itemBuilder: (context, index) {
+                  Attendee attendee = filteredAttendees[index];
+                  return GestureDetector(
+                      onTap: () async {
+                        try {
+                          bool check = await _toggleCheck(
+                              attendee.id, !attendee.checkIn);
+                          setState(() {
+                            filteredAttendees[index] = Attendee(
+                                attendee.id,
+                                attendee.firstName,
+                                attendee.lastName,
+                                attendee.email,
+                                check,
+                                attendee.comments);
+                          });
+                        } catch (ignored) {}
+                      },
+                      child: Card(
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4)),
+                        child: Container(
+                          child: ListTile(
+                            title: Text(
+                                "${attendee.firstName} ${attendee.lastName}"),
+                            leading: CircleGravatar(
+                              uid: attendee.email,
+                              placeholder:
+                                  '${attendee.firstName.substring(0, 1)}${attendee.lastName.substring(0, 1)}',
+                            ),
+                            trailing: Icon(
+                              Icons.check_circle,
+                              size: 30,
+                              color: attendee.checkIn
+                                  ? Color(PRIMARY_COLOR)
+                                  : Color(0xFFD3D3D3),
                             ),
                           ),
-                        ));
-                  });
-            } else {
-              return Center(child: CircularProgressIndicator());
-            }
-          }),
-      floatingActionButton: Builder(
-          builder: (ctx) => FloatingActionButton(
-                elevation: 0,
-                backgroundColor: Color(PRIMARY_COLOR),
-                onPressed: () => _scanQrCode(ctx),
-                child: Icon(Icons.crop_free),
-                shape: RoundedRectangleBorder(
-                    side: BorderSide(color: Colors.white, width: 4),
-                    borderRadius: BorderRadius.circular(45)),
-              )));
+                        ),
+                      ));
+                }),
+          )
+        ],
+      );
+    } else {
+      body = Center(child: CircularProgressIndicator());
+    }
+    return Scaffold(
+        backgroundColor: Color(BACKGROUND_COLOR),
+        appBar: AppBar(
+          title: Text('Check-in'.toUpperCase()),
+        ),
+        body: body,
+        floatingActionButton: Builder(
+            builder: (ctx) => FloatingActionButton(
+                  elevation: 0,
+                  backgroundColor: Color(PRIMARY_COLOR),
+                  onPressed: () => _scanQrCode(ctx),
+                  child: Icon(Icons.crop_free),
+                  shape: RoundedRectangleBorder(
+                      side: BorderSide(color: Colors.white, width: 4),
+                      borderRadius: BorderRadius.circular(45)),
+                )));
+  }
 
   void _scanQrCode(ctx) async {
     try {
@@ -125,7 +160,7 @@ class _AttendeesScreeState extends State<AttendeesScreen> {
       }
     } on FormatException {
       setState(() {
-        attendees = _getAttendees();
+        _loadAttendees();
       });
     } on CheckInException {
       Navigator.pop(ctx);
@@ -200,7 +235,7 @@ class _AttendeesScreeState extends State<AttendeesScreen> {
         SnackBar(backgroundColor: Colors.red[900], content: Text(message)));
   }
 
-  Future<List<Attendee>> _getAttendees() async {
+  void _loadAttendees() async {
     final user =
         User.fromJson(jsonDecode(await storage.read(key: STORAGE_KEY_USER)));
     final accessToken = await storage.read(key: STORAGE_KEY_ACCESS_TOKEN);
@@ -213,12 +248,15 @@ class _AttendeesScreeState extends State<AttendeesScreen> {
 
     if (response.statusCode == 200) {
       final _rawAttendees = jsonDecode(response.body);
-      final _events = List<Attendee>();
+      final _attendees = List<Attendee>();
       for (var rawEvent in _rawAttendees) {
-        _events.add(Attendee.fromJson(rawEvent));
+        _attendees.add(Attendee.fromJson(rawEvent));
       }
-      _events.sort((a, b) => a.firstName.compareTo(b.firstName));
-      return _events;
+      _attendees.sort((a, b) => a.firstName.compareTo(b.firstName));
+      setState(() {
+        attendees = _attendees;
+        filteredAttendees = _attendees;
+      });
     } else {
       throw Exception('Failed to load attendees');
     }
@@ -242,6 +280,14 @@ class _AttendeesScreeState extends State<AttendeesScreen> {
       throw CheckInException(
           'Cannot check-in attendee, status: ${response.statusCode}, message: ${response.body}');
     }
+  }
+
+  void _searchAttendees() {
+    final query = searchTextEditingController.text;
+    setState(() {
+      filteredAttendees =
+          attendees.where((a) => a.firstName.contains(query)).toList();
+    });
   }
 }
 
