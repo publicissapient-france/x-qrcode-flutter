@@ -13,8 +13,8 @@ import 'package:x_qrcode/common/circle_gravatar_widget.dart';
 import 'package:x_qrcode/event/events_screen.dart';
 import 'package:x_qrcode/organization/model/user_model.dart';
 import 'package:x_qrcode/visitor/model/attendee_model.dart';
-import 'package:x_qrcode/visitors/widgets/scan_floating_action_widget.dart';
-import 'package:x_qrcode/visitors/widgets/search_input_widget.dart';
+import 'package:x_qrcode/visitor/widget/scan_floating_action_widget.dart';
+import 'package:x_qrcode/visitor/widget/search_input_widget.dart';
 
 import '../constants.dart';
 
