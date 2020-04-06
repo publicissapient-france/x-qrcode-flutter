@@ -53,7 +53,7 @@ class _AppDrawerState extends State<AppDrawer> {
               children: <Widget>[
                 Container(
                   height: 80,
-                  color: Color(0xFFEDEDED),
+                  color: Color(BACKGROUND_COLOR),
                 ),
                 Align(
                   alignment: Alignment.bottomCenter,

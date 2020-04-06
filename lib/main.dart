@@ -24,6 +24,7 @@ class XQRCodeApp extends StatelessWidget {
       theme: ThemeData(
           primaryColor: Color(PRIMARY_COLOR),
           cursorColor: Color(PRIMARY_COLOR),
+          accentColor: Color(PRIMARY_COLOR),
           textTheme: TextTheme(subhead: TextStyle(fontSize: 14)),
           fontFamily: 'FuturaNext'),
       onGenerateRoute: (settings) {

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:x_qrcode/common/circle_gravatar.dart';
 import 'package:x_qrcode/events/events_screen.dart';
@@ -52,24 +53,62 @@ class _AttendeesScreeState extends State<AttendeesScreen> {
   Widget build(BuildContext context) {
     Widget body;
     if (filteredAttendees != null) {
+      final attendeesChecked = attendees.where((a) => a.checkIn).length;
       body = Column(
         children: <Widget>[
           Container(
             margin: EdgeInsets.all(12),
-            decoration:
-                BoxDecoration(shape: BoxShape.rectangle, color: Colors.white),
-            child: TextField(
-              controller: searchTextEditingController,
-              textInputAction: TextInputAction.search,
-              textCapitalization: TextCapitalization.words,
-              decoration: InputDecoration(
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.only(top: 16),
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: Colors.black,
+            child: Column(
+              children: <Widget>[
+                Container(
+                  color: Colors.white,
+                  child: TextField(
+                    controller: searchTextEditingController,
+                    textInputAction: TextInputAction.search,
+                    textCapitalization: TextCapitalization.words,
+                    decoration: InputDecoration(
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.only(top: 16),
+                        prefixIcon: SvgPicture.asset(
+                          'images/search.svg',
+                          fit: BoxFit.scaleDown,
+                        ),
+                        hintText: 'Rechercher...'),
                   ),
-                  hintText: 'Rechercher...'),
+                ),
+                ClipRRect(
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(8),
+                      bottomRight: Radius.circular(8)),
+                  child: LinearProgressIndicator(
+                    backgroundColor: Color(0xFFD3D3D3),
+                    value: attendeesChecked / attendees.length,
+                  ),
+                ),
+                Container(
+                  height: 8,
+                ),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Text(
+                        attendeesChecked.toString(),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Color(PRIMARY_COLOR),
+                            fontSize: 16),
+                      ),
+                    ),
+                    Text(
+                      attendees.length.toString(),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF8E8E8E),
+                          fontSize: 16),
+                    ),
+                  ],
+                )
+              ],
             ),
           ),
           Expanded(

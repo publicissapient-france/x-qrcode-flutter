@@ -25,11 +25,12 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - images/logo_xqrcode.svg
-    - images/logo_pse.png
-    - images/logo_mark.svg
     - .env
     - images/disconnect.svg
+    - images/logo_mark.svg
+    - images/logo_pse.png
+    - images/logo_xqrcode.svg
+    - images/search.svg
   fonts:
     - family: FuturaNext
       fonts:
