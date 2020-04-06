@@ -6,9 +6,9 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-import 'package:x_qrcode/events/events_screen.dart';
-import 'package:x_qrcode/organization/user.dart';
-import 'package:x_qrcode/visitors/attendee.dart';
+import 'package:x_qrcode/event/events_screen.dart';
+import 'package:x_qrcode/organization/model/user_model.dart';
+import 'package:x_qrcode/visitor/model/attendee_model.dart';
 
 import '../constants.dart';
 

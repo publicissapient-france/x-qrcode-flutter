@@ -8,12 +8,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
-import 'package:x_qrcode/common/circle_gravatar.dart';
-import 'package:x_qrcode/events/events_screen.dart';
-import 'package:x_qrcode/organization/user.dart';
-import 'package:x_qrcode/visitors/attendee.dart';
+import 'package:x_qrcode/common/circle_gravatar_widget.dart';
+import 'package:x_qrcode/event/events_screen.dart';
+import 'package:x_qrcode/organization/model/user_model.dart';
+import 'package:x_qrcode/visitor/model/attendee_model.dart';
+import 'package:x_qrcode/visitors/widgets/scan_floating_action_widget.dart';
+import 'package:x_qrcode/visitors/widgets/search_input_widget.dart';
 
 import '../constants.dart';
 
@@ -60,26 +61,14 @@ class _AttendeesScreeState extends State<AttendeesScreen> {
             margin: EdgeInsets.all(12),
             child: Column(
               children: <Widget>[
-                Container(
-                  color: Colors.white,
-                  child: TextField(
-                    controller: searchTextEditingController,
-                    textInputAction: TextInputAction.search,
-                    textCapitalization: TextCapitalization.words,
-                    decoration: InputDecoration(
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.only(top: 16),
-                        prefixIcon: SvgPicture.asset(
-                          'images/search.svg',
-                          fit: BoxFit.scaleDown,
-                        ),
-                        hintText: 'Rechercher...'),
-                  ),
+                SearchInput(
+                  searchTextEditingController: searchTextEditingController,
                 ),
                 ClipRRect(
                   borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(8),
-                      bottomRight: Radius.circular(8)),
+                    bottomLeft: Radius.circular(8),
+                    bottomRight: Radius.circular(8),
+                  ),
                   child: LinearProgressIndicator(
                     backgroundColor: Color(0xFFD3D3D3),
                     value: attendeesChecked / attendees.length,
@@ -169,16 +158,9 @@ class _AttendeesScreeState extends State<AttendeesScreen> {
           title: Text('Check-in'.toUpperCase()),
         ),
         body: body,
-        floatingActionButton: Builder(
-            builder: (ctx) => FloatingActionButton(
-                  elevation: 0,
-                  backgroundColor: Color(PRIMARY_COLOR),
-                  onPressed: () => _scanQrCode(ctx),
-                  child: Icon(Icons.crop_free),
-                  shape: RoundedRectangleBorder(
-                      side: BorderSide(color: Colors.white, width: 4),
-                      borderRadius: BorderRadius.circular(45)),
-                )));
+        floatingActionButton: ScanFloatingActionButton(
+          onPressed: _scanQrCode,
+        ));
   }
 
   void _scanQrCode(ctx) async {
@@ -322,10 +304,11 @@ class _AttendeesScreeState extends State<AttendeesScreen> {
   }
 
   void _searchAttendees() {
-    final query = searchTextEditingController.text;
+    final query = searchTextEditingController.text.toLowerCase();
     setState(() {
-      filteredAttendees =
-          attendees.where((a) => a.firstName.contains(query)).toList();
+      filteredAttendees = attendees
+          .where((a) => a.firstName.toLowerCase().contains(query))
+          .toList();
     });
   }
 }

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:x_qrcode/constants.dart';
-import 'package:x_qrcode/events/events_screen.dart';
+import 'package:x_qrcode/event/events_screen.dart';
 import 'package:x_qrcode/home/home_screen.dart';
-import 'package:x_qrcode/visitors/visitor_screen.dart';
-import 'package:x_qrcode/visitors/consent_screen.dart';
-import 'package:x_qrcode/visitors/visitors_screen.dart';
+import 'package:x_qrcode/visitor/visitor_screen.dart';
+import 'package:x_qrcode/visitor/consent_screen.dart';
+import 'package:x_qrcode/visitor/visitors_screen.dart';
 
-import 'attendees/attendees_screen.dart';
+import 'attendee/attendees_screen.dart';
 import 'auth/login_screen.dart';
 import 'organization/organization_screen.dart';
 

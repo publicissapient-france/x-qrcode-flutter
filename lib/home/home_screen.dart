@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:x_qrcode/auth/login_screen.dart';
-import 'package:x_qrcode/events/events_screen.dart';
+import 'package:x_qrcode/event/events_screen.dart';
 import 'package:x_qrcode/organization/organization_screen.dart';
 
 import '../constants.dart';
