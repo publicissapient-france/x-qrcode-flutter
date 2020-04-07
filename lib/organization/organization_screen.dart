@@ -6,12 +6,12 @@ import 'package:flutter_auth0/flutter_auth0.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:x_qrcode/common/common_models.dart';
-import 'package:x_qrcode/events/events_screen.dart';
-import 'package:x_qrcode/organization/user.dart';
+import 'package:x_qrcode/common/constants.dart';
+import 'package:x_qrcode/event/events_screen.dart';
+import 'package:x_qrcode/organization/model/user_model.dart';
 
 import '../constants.dart';
-import 'company.dart';
+import 'model/company_model.dart';
 
 const organisationsRoute = '/organizations';
 
@@ -38,80 +38,82 @@ class _OrganizationsScreenState extends State<OrganizationsScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    body: Padding(
-      padding: EdgeInsets.all(48),
-      child: FutureBuilder<UserInfo>(
-        future: userInfo,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return Column(
-              children: <Widget>[
-                Container(
-                  margin: EdgeInsets.only(top: 96, bottom: 16),
-                  child: RichText(
-                    text: TextSpan(
-                        text: 'Bonjour',
-                        style: TextStyle(color: Colors.black, height: 1.5),
-                        children: [
-                          TextSpan(
-                              text: ' ${snapshot.data.firstName}',
-                              style:
-                              TextStyle(fontWeight: FontWeight.bold)),
-                          TextSpan(
-                            text:
-                            ', sélectionnez une organisation pour continuer :',
-                          ),
-                        ]),
-                  ),
-                ),
-                Flexible(
-                    child: ListView.builder(
-                        itemCount: snapshot.data.tenants.length,
-                        itemBuilder: (context, index) => FlatButton(
-                          color: Color(PRIMARY_COLOR),
-                          onPressed: () async {
-                            var company = await _getCompany(
-                                snapshot.data.tenants[index]);
-                            var user = User(
-                                snapshot.data.firstName,
-                                snapshot.data.lastName,
-                                snapshot.data.email,
-                                snapshot.data.tenants[index],
-                                company,
-                                snapshot.data.roles);
-                            await storage.write(
-                                key: STORAGE_KEY_USER,
-                                value: jsonEncode(user));
-                            if (user.roles.contains(ROLE_ADMIN)) {
-                              await storage.write(
-                                  key: STORAGE_KEY_MODE,
-                                  value: MODE_CHECK_IN);
-                            }
-                            Navigator.of(context)
-                                .pushNamedAndRemoveUntil(
-                                eventsRoute, (_) => false);
-                          },
-                          child: Text(
-                            snapshot.data.tenants[index].toUpperCase(),
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ))),
-                Padding(
-                  padding: EdgeInsets.only(top: 16),
-                  child: Image.asset(
-                    'images/logo_pse.png',
-                    height: 120,
-                  ),
-                )
-              ],
-            );
-          } else {
-            return Center(child: CircularProgressIndicator());
-          }
-        },
-      ),
-    ),
-  );
+        body: Padding(
+          padding: EdgeInsets.all(48),
+          child: FutureBuilder<UserInfo>(
+            future: userInfo,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Column(
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(top: 96, bottom: 16),
+                      child: RichText(
+                        text: TextSpan(
+                            text: 'Bonjour',
+                            style: TextStyle(color: Colors.black, height: 1.5),
+                            children: [
+                              TextSpan(
+                                  text: ' ${snapshot.data.firstName}',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              TextSpan(
+                                text:
+                                    ', sélectionnez une organisation pour continuer :',
+                              ),
+                            ]),
+                      ),
+                    ),
+                    Flexible(
+                        child: ListView.builder(
+                            itemCount: snapshot.data.tenants.length,
+                            itemBuilder: (context, index) => FlatButton(
+                                  color: Color(PRIMARY_COLOR),
+                                  onPressed: () async {
+                                    var company = await _getCompany(
+                                        snapshot.data.tenants[index]);
+                                    var user = User(
+                                        snapshot.data.firstName,
+                                        snapshot.data.lastName,
+                                        snapshot.data.email,
+                                        snapshot.data.tenants[index],
+                                        company,
+                                        snapshot.data.roles);
+                                    await storage.write(
+                                        key: STORAGE_KEY_USER,
+                                        value: jsonEncode(user));
+                                    if (user.roles.contains(ROLE_ADMIN)) {
+                                      await storage.write(
+                                          key: STORAGE_KEY_MODE,
+                                          value: MODE_CHECK_IN);
+                                    }
+                                    Navigator.of(context)
+                                        .pushNamedAndRemoveUntil(
+                                      eventsRoute,
+                                      (_) => false,
+                                    );
+                                  },
+                                  child: Text(
+                                    snapshot.data.tenants[index].toUpperCase(),
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ))),
+                    Padding(
+                      padding: EdgeInsets.only(top: 16),
+                      child: Image.asset(
+                        'images/logo_pse.png',
+                        height: 120,
+                      ),
+                    )
+                  ],
+                );
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
+            },
+          ),
+        ),
+      );
 
   Future<UserInfo> _getUserInfo() async {
     final accessToken = await storage.read(key: STORAGE_KEY_ACCESS_TOKEN);

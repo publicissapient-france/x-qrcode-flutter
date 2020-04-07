@@ -1,4 +1,4 @@
-import 'company.dart';
+import 'company_model.dart';
 
 class User {
   final String firstName;

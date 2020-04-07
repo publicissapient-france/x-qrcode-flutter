@@ -9,12 +9,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'package:x_qrcode/api/api_service.dart';
-import 'package:x_qrcode/common/circle_gravatar.dart';
-import 'package:x_qrcode/events/events_screen.dart';
-import 'package:x_qrcode/organization/user.dart';
-import 'package:x_qrcode/visitors/attendee.dart';
+import 'package:x_qrcode/common/circle_gravatar_widget.dart';
+import 'package:x_qrcode/event/events_screen.dart';
+import 'package:x_qrcode/organization/model/user_model.dart';
 
 import '../constants.dart';
+import 'model/attendee_model.dart';
 
 class VisitorScreenArguments {
   final String visitorId;

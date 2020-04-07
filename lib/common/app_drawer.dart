@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:x_qrcode/auth/login_screen.dart';
-import 'package:x_qrcode/common/circle_gravatar.dart';
-import 'package:x_qrcode/organization/user.dart';
+import 'package:x_qrcode/common/circle_gravatar_widget.dart';
+import 'package:x_qrcode/organization/model/user_model.dart';
 
 import '../constants.dart';
-import 'common_models.dart';
+import 'constants.dart';
 
 class AppDrawer extends StatefulWidget {
   @override
@@ -53,7 +53,7 @@ class _AppDrawerState extends State<AppDrawer> {
               children: <Widget>[
                 Container(
                   height: 80,
-                  color: Color(0xFFEDEDED),
+                  color: Color(BACKGROUND_COLOR),
                 ),
                 Align(
                   alignment: Alignment.bottomCenter,
