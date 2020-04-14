@@ -46,71 +46,69 @@ class _VisitorsScreeState extends State<VisitorsScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Color(BACKGROUND_COLOR),
-        appBar: AppBar(
-          title: Text('Visiteurs'.toUpperCase()),
-        ),
-        body: BlocProvider<VisitorsBloc>(
-          bloc: bloc,
-          child: StreamBuilder<List<Attendee>>(
-            stream: bloc.visitorsStream,
-            builder: (context, snapshot) {
-              final visitors = snapshot.data;
-              if (snapshot.hasData) {
-                return Column(
-                  children: <Widget>[
-                    Container(
-                        margin: EdgeInsets.all(12),
-                        child: ClipRRect(
-                          child: SearchInput(
-                            searchTextEditingController:
-                                searchTextEditingController,
-                          ),
-                          borderRadius: BorderRadius.circular(4),
-                        )),
-                    Expanded(
-                        child: ListView.builder(
-                            padding: EdgeInsets.all(8),
-                            itemCount: visitors.length,
-                            itemBuilder: (context, index) {
-                              Attendee visitor = visitors[index];
-                              return GestureDetector(
-                                  onTap: () {
-                                    Navigator.pushNamed(context, visitorRoute,
-                                        arguments:
-                                            VisitorScreenArguments(visitor.id));
-                                  },
-                                  child: Card(
-                                    elevation: 0,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(4)),
-                                    child: Container(
-                                      child: ListTile(
-                                        leading: CircleGravatar(
-                                          uid: visitor.email,
-                                          placeholder:
-                                              '${visitor.firstName.substring(0, 1)}${visitor.lastName.substring(0, 1)}',
-                                        ),
-                                        title: Text(
-                                            "${visitor.firstName} ${visitor.lastName}"),
+  Widget build(BuildContext context) => Scaffold(
+      backgroundColor: Color(BACKGROUND_COLOR),
+      appBar: AppBar(
+        title: Text('Visiteurs'.toUpperCase()),
+      ),
+      body: BlocProvider<VisitorsBloc>(
+        bloc: bloc,
+        child: StreamBuilder<List<Attendee>>(
+          stream: bloc.visitorsStream,
+          builder: (context, snapshot) {
+            final visitors = snapshot.data;
+            if (snapshot.hasData) {
+              return Column(
+                children: <Widget>[
+                  Container(
+                      margin: EdgeInsets.all(12),
+                      child: ClipRRect(
+                        child: SearchInput(
+                          searchTextEditingController:
+                              searchTextEditingController,
+                        ),
+                        borderRadius: BorderRadius.circular(4),
+                      )),
+                  Expanded(
+                      child: ListView.builder(
+                          padding: EdgeInsets.all(8),
+                          itemCount: visitors.length,
+                          itemBuilder: (context, index) {
+                            Attendee visitor = visitors[index];
+                            return GestureDetector(
+                                onTap: () {
+                                  Navigator.pushNamed(context, visitorRoute,
+                                      arguments:
+                                          VisitorScreenArguments(visitor.id));
+                                },
+                                child: Card(
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(4)),
+                                  child: Container(
+                                    child: ListTile(
+                                      leading: CircleGravatar(
+                                        uid: visitor.email,
+                                        placeholder:
+                                            '${visitor.firstName.substring(0, 1)}${visitor.lastName.substring(0, 1)}',
                                       ),
+                                      title: Text(
+                                          "${visitor.firstName} ${visitor.lastName}"),
                                     ),
-                                  ));
-                            }))
-                  ],
-                );
-              } else {
-                return Center(child: CircularProgressIndicator());
-              }
-            },
-          ),
+                                  ),
+                                ));
+                          }))
+                ],
+              );
+            } else {
+              return Center(child: CircularProgressIndicator());
+            }
+          },
         ),
-        floatingActionButton: ScanFloatingActionButton(
-          onPressed: _scanQrCode,
-        ));
-  }
+      ),
+      floatingActionButton: ScanFloatingActionButton(
+        onPressed: _scanQrCode,
+      ));
 
   void _scanQrCode(ctx) async {
     try {
