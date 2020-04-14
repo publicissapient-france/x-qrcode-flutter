@@ -56,8 +56,8 @@ class _VisitorsScreeState extends State<VisitorsScreen> {
         child: StreamBuilder<List<Attendee>>(
           stream: bloc.visitorsStream,
           builder: (context, snapshot) {
-            final visitors = snapshot.data;
             if (snapshot.hasData) {
+              final visitors = snapshot.data;
               return Column(
                 children: <Widget>[
                   Container(
