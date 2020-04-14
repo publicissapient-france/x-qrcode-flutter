@@ -21,7 +21,7 @@ class VisitorsBloc implements Bloc {
     _visitorsController.sink.add(_visitors);
   }
 
-  void searchVisitor(String query) {
+  void searchVisitors(String query) {
     _visitorsController.sink.add(_visitors
         .where((v) => v.firstName.toLowerCase().contains(query))
         .toList());

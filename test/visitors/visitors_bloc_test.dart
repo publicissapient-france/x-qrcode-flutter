@@ -55,7 +55,7 @@ void main() {
         emitsInOrder([attendees]),
       );
 
-      visitorsBloc.searchVisitor('jo');
+      visitorsBloc.searchVisitors('jo');
 
       expectLater(
         stream,

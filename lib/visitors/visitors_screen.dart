@@ -35,9 +35,8 @@ class _VisitorsScreeState extends State<VisitorsScreen> {
   void initState() {
     super.initState();
     bloc.loadVisitors();
-    searchTextEditingController.addListener(() {
-      bloc.searchVisitor(searchTextEditingController.text.toLowerCase());
-    });
+    searchTextEditingController.addListener(() =>
+        bloc.searchVisitors(searchTextEditingController.text.toLowerCase()));
   }
 
   @override
