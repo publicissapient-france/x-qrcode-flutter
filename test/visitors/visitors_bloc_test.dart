@@ -48,7 +48,7 @@ void main() {
 
       visitorsBloc.loadVisitors();
 
-      var stream = visitorsBloc.visitorsStream;
+      var stream = visitorsBloc.visitorsStream.asBroadcastStream();
 
       await expectLater(
         stream,

@@ -14,7 +14,7 @@ class VisitorsBloc implements Bloc {
 
   VisitorsBloc({@required this.apiService});
 
-  Stream<List<Attendee>> get visitorsStream => _visitorsController.stream.asBroadcastStream();
+  Stream<List<Attendee>> get visitorsStream => _visitorsController.stream;
 
   void loadVisitors() async {
     _visitors = await apiService.getVisitors();
