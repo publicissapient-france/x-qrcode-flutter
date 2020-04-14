@@ -46,14 +46,20 @@ void main() {
         return Future.value(attendees);
       });
 
-      await visitorsBloc.loadVisitors();
+      visitorsBloc.loadVisitors();
+
+      var stream = visitorsBloc.visitorsStream;
+
+      await expectLater(
+        stream,
+        emitsInOrder([attendees]),
+      );
 
       visitorsBloc.searchVisitor('jo');
 
       expectLater(
-        visitorsBloc.visitorsStream,
+        stream,
         emitsInOrder([
-          attendees,
           [john],
         ]),
       );

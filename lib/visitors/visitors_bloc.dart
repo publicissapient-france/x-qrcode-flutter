@@ -14,12 +14,11 @@ class VisitorsBloc implements Bloc {
 
   VisitorsBloc({@required this.apiService});
 
-  Stream<List<Attendee>> get visitorsStream => _visitorsController.stream;
+  Stream<List<Attendee>> get visitorsStream => _visitorsController.stream.asBroadcastStream();
 
-  Future loadVisitors() async {
+  void loadVisitors() async {
     _visitors = await apiService.getVisitors();
     _visitorsController.sink.add(_visitors);
-    return _visitors; // for unit testing purpose
   }
 
   void searchVisitor(String query) {
