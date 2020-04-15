@@ -36,7 +36,7 @@ void main() {
       );
     });
 
-    test('should search visitor', () async {
+    test('should search visitors', () async {
       var john = Attendee('1', 'John', 'Doe', 'jd@email.com', false, null);
       final attendees = [
         john,
