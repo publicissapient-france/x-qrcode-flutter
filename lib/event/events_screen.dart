@@ -10,7 +10,7 @@ import 'package:x_qrcode/attendee/attendees_screen.dart';
 import 'package:x_qrcode/common/app_drawer.dart';
 import 'package:x_qrcode/common/constants.dart';
 import 'package:x_qrcode/organization/model/user_model.dart';
-import 'package:x_qrcode/visitor/visitors_screen.dart';
+import 'package:x_qrcode/visitors/visitors_screen.dart';
 
 import '../constants.dart';
 
