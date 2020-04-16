@@ -7,7 +7,7 @@ import 'package:x_qrcode/visitor/visitor_screen.dart';
 import 'package:x_qrcode/visitor/consent_screen.dart';
 import 'package:x_qrcode/visitors/visitors_screen.dart';
 
-import 'attendee/attendees_screen.dart';
+import 'attendees/attendees_screen.dart';
 import 'auth/login_screen.dart';
 import 'organization/organization_screen.dart';
 

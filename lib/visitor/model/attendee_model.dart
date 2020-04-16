@@ -1,9 +1,9 @@
 class Attendee {
   final String id;
   final String firstName;
+  final bool checkIn;
   final String lastName;
   final String email;
-  final bool checkIn;
   final List<Comment> comments;
 
   Attendee(this.id, this.firstName, this.lastName, this.email, this.checkIn,
@@ -27,6 +27,41 @@ class Attendee {
         'email': email,
         'comments': comments
       };
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Attendee &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          firstName == other.firstName &&
+          checkIn == other.checkIn &&
+          lastName == other.lastName &&
+          email == other.email;
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      firstName.hashCode ^
+      checkIn.hashCode ^
+      lastName.hashCode ^
+      email.hashCode;
+
+  @override
+  String toString() {
+    return 'Attendee{id: $id, checkIn: $checkIn}';
+  }
+
+  Attendee copy({bool check}) {
+    return Attendee(
+      this.id,
+      this.firstName,
+      this.lastName,
+      this.email,
+      check,
+      this.comments,
+    );
+  }
 }
 
 class Comment {
