@@ -4,10 +4,12 @@ class Attendee {
   final bool checkIn;
   final String lastName;
   final String email;
+  final String placeholder;
   final List<Comment> comments;
 
   Attendee(this.id, this.firstName, this.lastName, this.email, this.checkIn,
-      this.comments);
+      this.comments)
+      : this.placeholder = _generatePlaceholder(firstName, lastName);
 
   Attendee.fromJson(Map<String, dynamic> json)
       : id = json['attendee_id'],
@@ -15,6 +17,7 @@ class Attendee {
         lastName = json['lastName'],
         email = json['email'],
         checkIn = json['checkIn'] != null ? true : false,
+        placeholder = _generatePlaceholder(json['firstName'], json['lastName']),
         comments = json['comments'] != null
             ? List<Comment>.from(
                 json['comments'].map((comment) => Comment.fromNetwork(comment)))
@@ -61,6 +64,15 @@ class Attendee {
       check,
       this.comments,
     );
+  }
+
+  static _generatePlaceholder(String firstName, String lastName) {
+    if (firstName != null) {
+      if (lastName != null) {
+        return firstName.substring(0, 1) + lastName.substring(0, 1);
+      }
+      return '?';
+    }
   }
 }
 
