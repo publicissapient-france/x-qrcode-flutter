@@ -24,6 +24,7 @@ class AttendeesBloc implements Bloc {
   List<Attendee> _attendees;
   num _attendeesCheckCount;
   num _attendeesCount;
+  String _query = '';
 
   AttendeesBloc({@required this.apiService});
 
@@ -38,10 +39,11 @@ class AttendeesBloc implements Bloc {
     _attendeesCheckCount = _attendees.where((a) => a.checkIn).length;
     _attendeesCount = _attendees.length;
 
-    _attendeesController.sink.add(_groupAttendeesByFirstChar(_attendees));
+    searchAttendees(_query);
   }
 
   void searchAttendees(String query) {
+    _query = query;
     _attendeesController.sink.add(_groupAttendeesByFirstChar((_attendees
         .where((a) => a.firstName.toLowerCase().contains(query))
         .toList())));
