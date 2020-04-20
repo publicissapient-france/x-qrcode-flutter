@@ -4,6 +4,7 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:x_qrcode/api/api_service.dart';
 import 'package:x_qrcode/bloc/bloc_provider.dart';
 import 'package:x_qrcode/widget/circle_gravatar_widget.dart';
@@ -53,11 +54,10 @@ class _VisitorsScreeState extends State<VisitorsScreen> {
       ),
       body: BlocProvider<VisitorsBloc>(
         bloc: bloc,
-        child: StreamBuilder<List<Attendee>>(
+        child: StreamBuilder<Map<String, List<Attendee>>>(
           stream: bloc.visitorsStream,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              final visitors = snapshot.data;
               return Column(
                 children: <Widget>[
                   Container(
@@ -70,34 +70,26 @@ class _VisitorsScreeState extends State<VisitorsScreen> {
                         borderRadius: BorderRadius.circular(4),
                       )),
                   Expanded(
-                      child: ListView.builder(
-                          padding: EdgeInsets.all(8),
-                          itemCount: visitors.length,
-                          itemBuilder: (context, index) {
-                            Attendee visitor = visitors[index];
-                            return GestureDetector(
-                                onTap: () {
-                                  Navigator.pushNamed(context, visitorRoute,
-                                      arguments:
-                                          VisitorScreenArguments(visitor.id));
-                                },
-                                child: Card(
-                                  elevation: 0,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(4)),
-                                  child: Container(
-                                    child: ListTile(
-                                      leading: CircleGravatar(
-                                        uid: visitor.email,
-                                        placeholder:
-                                            '${visitor.firstName.substring(0, 1)}${visitor.lastName.substring(0, 1)}',
-                                      ),
-                                      title: Text(
-                                          "${visitor.firstName} ${visitor.lastName}"),
-                                    ),
+                      child: CustomScrollView(
+                          slivers: snapshot.data.entries
+                              .map((v) => SliverStickyHeader(
+                                  header: Container(
+                                    height: 28,
+                                    color: Color(0xFFD3D3D3),
+                                    padding: EdgeInsets.only(left: 12, top: 6),
+                                    child: Text(v.key.toUpperCase()),
                                   ),
-                                ));
-                          }))
+                                  sliver: SliverPadding(
+                                    padding: EdgeInsets.only(
+                                        left: 8, right: 8, top: 8, bottom: 8),
+                                    sliver: SliverList(
+                                      delegate: SliverChildBuilderDelegate(
+                                          (context, i) =>
+                                              _buildVisitor(v.value[i]),
+                                          childCount: v.value.length),
+                                    ),
+                                  )))
+                              .toList())),
                 ],
               );
             } else {
@@ -108,6 +100,26 @@ class _VisitorsScreeState extends State<VisitorsScreen> {
       ),
       floatingActionButton: ScanFloatingActionButton(
         onPressed: _scanQrCode,
+      ));
+
+  GestureDetector _buildVisitor(Attendee visitor) => GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, visitorRoute,
+            arguments: VisitorScreenArguments(visitor.id));
+      },
+      child: Card(
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        child: Container(
+          child: ListTile(
+            leading: CircleGravatar(
+              uid: visitor.email,
+              placeholder:
+                  '${visitor.firstName.substring(0, 1)}${visitor.lastName.substring(0, 1)}',
+            ),
+            title: Text("${visitor.firstName} ${visitor.lastName}"),
+          ),
+        ),
       ));
 
   void _scanQrCode(ctx) async {
