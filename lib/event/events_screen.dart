@@ -7,8 +7,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:x_qrcode/attendees/attendees_screen.dart';
-import 'package:x_qrcode/common/app_drawer.dart';
-import 'package:x_qrcode/common/constants.dart';
+import 'package:x_qrcode/widget/app_drawer_widget.dart';
+import 'package:x_qrcode/constants.dart';
 import 'package:x_qrcode/organization/model/user_model.dart';
 import 'package:x_qrcode/visitors/visitors_screen.dart';
 

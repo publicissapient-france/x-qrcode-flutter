@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:x_qrcode/api/api_service.dart';
-import 'package:x_qrcode/common/bloc.dart';
+import 'package:x_qrcode/bloc/bloc.dart';
 import 'package:x_qrcode/visitor/model/attendee_model.dart';
 
 class VisitorsBloc implements Bloc {
