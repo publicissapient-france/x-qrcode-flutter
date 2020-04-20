@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:x_qrcode/attendees/checkin_exception.dart';
+import 'package:x_qrcode/exception/checkin_exception.dart';
 
 import 'package:x_qrcode/event/events_screen.dart';
 import 'package:x_qrcode/organization/model/user_model.dart';

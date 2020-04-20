@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'package:x_qrcode/api/api_service.dart';
-import 'package:x_qrcode/common/circle_gravatar_widget.dart';
+import 'package:x_qrcode/widget/circle_gravatar_widget.dart';
 import 'package:x_qrcode/event/events_screen.dart';
 import 'package:x_qrcode/organization/model/user_model.dart';
 
