@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/cupertino.dart';
@@ -9,7 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'package:x_qrcode/api/api_service.dart';
-import 'package:x_qrcode/widget/circle_gravatar_widget.dart';
+import 'package:x_qrcode/visitor/widget/header_widget.dart';
+import 'package:x_qrcode/visitor/widget/info_widget.dart';
 import 'package:x_qrcode/event/events_screen.dart';
 import 'package:x_qrcode/organization/model/user_model.dart';
 
@@ -59,7 +61,6 @@ class _VisitorScreenState extends State<VisitorScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        backgroundColor: Color(BACKGROUND_COLOR),
         appBar: AppBar(
           title: Text('📝 Commentaires'.toUpperCase()),
           elevation: 0,
@@ -70,13 +71,14 @@ class _VisitorScreenState extends State<VisitorScreen> {
             if (snapshot.hasData) {
               Attendee visitor = snapshot.data;
               return Column(children: <Widget>[
-                _buildHeader(visitor),
+                HeaderWidget(attendee: visitor),
                 Expanded(
                     child: CustomScrollView(
                   slivers: <Widget>[
                     SliverList(
                       delegate: SliverChildListDelegate([
-                        _buildInfo(visitor.email, Icons.mail_outline, true),
+                        InfoWidget(visitor.email, SvgPicture.asset('images/email.svg'),
+                            first: true),
                         _commentFieldVisible
                             ? Container()
                             : _buildWriteComment(),
@@ -234,60 +236,6 @@ class _VisitorScreenState extends State<VisitorScreen> {
           });
         },
       ));
-
-  Card _buildInfo(String info, IconData iconData, bool first) => Card(
-        elevation: 0,
-        margin: EdgeInsets.only(
-          top: first ? 4 : 8,
-          right: 8,
-          left: 8,
-        ),
-        child: ListTile(
-          leading: Icon(iconData),
-          title: Text(info),
-        ),
-      );
-
-  Stack _buildHeader(Attendee visitor) => Stack(
-        children: <Widget>[
-          Align(
-              alignment: Alignment.topCenter,
-              child: Container(
-                height: 168,
-                margin: EdgeInsets.only(bottom: 4),
-                child: Card(
-                  elevation: 2,
-                  margin: EdgeInsets.only(right: 8, left: 8),
-                  child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                          margin: EdgeInsets.only(bottom: 16),
-                          child: Text(
-                            '${visitor.firstName} ${visitor.lastName}',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ))),
-                ),
-              )),
-          Container(
-            height: 50,
-            color: Color(PRIMARY_COLOR),
-          ),
-          Align(
-            alignment: Alignment.topCenter,
-            child: Container(
-                height: 120,
-                width: 120,
-                decoration:
-                    BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                padding: EdgeInsets.all(4),
-                child: CircleGravatar(
-                  uid: visitor.email,
-                  placeholder:
-                      '${visitor.firstName.substring(0, 1)}${visitor.lastName.substring(0, 1)}',
-                )),
-          ),
-        ],
-      );
 
   void _saveComment() async {
     if (_commentController.text.isNotEmpty) {

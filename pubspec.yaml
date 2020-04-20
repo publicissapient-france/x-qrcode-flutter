@@ -28,6 +28,7 @@ flutter:
   assets:
     - .env
     - images/disconnect.svg
+    - images/email.svg
     - images/logo_mark.svg
     - images/logo_pse.png
     - images/logo_xqrcode.svg

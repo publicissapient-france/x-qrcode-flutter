@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:x_qrcode/attendee/attendee_screen.dart';
 import 'package:x_qrcode/constants.dart';
 import 'package:x_qrcode/event/events_screen.dart';
 import 'package:x_qrcode/home/home_screen.dart';
@@ -22,6 +23,7 @@ class XQRCodeApp extends StatelessWidget {
     return MaterialApp(
       title: 'X-QRCode',
       theme: ThemeData(
+          scaffoldBackgroundColor: Color(BACKGROUND_COLOR),
           primaryColor: Color(PRIMARY_COLOR),
           cursorColor: Color(PRIMARY_COLOR),
           accentColor: Color(PRIMARY_COLOR),
@@ -35,8 +37,13 @@ class XQRCodeApp extends StatelessWidget {
             return MaterialPageRoute(builder: (_) => HomeScreen());
           case visitorsRoute:
             return MaterialPageRoute(builder: (_) => VisitorsScreen());
-          case attendeeRoute:
+          case attendeesRoute:
             return MaterialPageRoute(builder: (_) => AttendeesScreen());
+          case attendeeRoute:
+            return MaterialPageRoute(builder: (_) {
+              final AttendeeScreenArguments args = settings.arguments;
+              return AttendeeScreen(attendee: args.attendee);
+            });
           case consentRoute:
             return MaterialPageRoute(builder: (_) {
               final ConsentScreenArguments args = settings.arguments;

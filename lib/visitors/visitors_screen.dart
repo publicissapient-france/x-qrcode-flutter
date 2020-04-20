@@ -13,7 +13,6 @@ import 'package:x_qrcode/visitor/visitor_screen.dart';
 import 'package:x_qrcode/visitor/widget/search_input_widget.dart';
 import 'package:x_qrcode/visitors/visitors_bloc.dart';
 
-import '../constants.dart';
 import '../visitor/consent_screen.dart';
 import '../visitor/model/attendee_model.dart';
 
@@ -48,7 +47,6 @@ class _VisitorsScreeState extends State<VisitorsScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      backgroundColor: Color(BACKGROUND_COLOR),
       appBar: AppBar(
         title: Text('Visiteurs'.toUpperCase()),
       ),
