@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:x_qrcode/api/api_service.dart';
 import 'package:x_qrcode/attendees/attendees_bloc.dart';
 import 'package:x_qrcode/attendees/checkin_exception.dart';
@@ -57,17 +58,15 @@ class _AttendeesScreeState extends State<AttendeesScreen> {
         appBar: AppBar(
           title: Text('Check-in'.toUpperCase()),
         ),
-        body: StreamBuilder<List<Attendee>>(
+        body: StreamBuilder<Map<String, List<Attendee>>>(
             stream: bloc.attendeesStream,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                final attendees = snapshot.data;
-                final attendeesChecked =
-                    attendees.where((a) => a.checkIn).length;
                 return Column(
                   children: <Widget>[
                     Container(
-                      margin: EdgeInsets.all(12),
+                      margin: EdgeInsets.only(
+                          left: 12, right: 12, top: 12, bottom: 6),
                       child: Column(
                         children: <Widget>[
                           SearchInput(
@@ -81,7 +80,7 @@ class _AttendeesScreeState extends State<AttendeesScreen> {
                             ),
                             child: LinearProgressIndicator(
                               backgroundColor: Color(0xFFD3D3D3),
-                              value: attendeesChecked / attendees.length,
+                              value: bloc.checked / bloc.count,
                             ),
                           ),
                           Container(
@@ -91,7 +90,7 @@ class _AttendeesScreeState extends State<AttendeesScreen> {
                             children: <Widget>[
                               Expanded(
                                 child: Text(
-                                  attendeesChecked.toString(),
+                                  bloc.checked.toString(),
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: Color(PRIMARY_COLOR),
@@ -99,7 +98,7 @@ class _AttendeesScreeState extends State<AttendeesScreen> {
                                 ),
                               ),
                               Text(
-                                attendees.length.toString(),
+                                bloc.count.toString(),
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Color(0xFF8E8E8E),
@@ -111,40 +110,27 @@ class _AttendeesScreeState extends State<AttendeesScreen> {
                       ),
                     ),
                     Expanded(
-                      child: ListView.builder(
-                          padding: EdgeInsets.all(8),
-                          itemCount: attendees.length,
-                          itemBuilder: (context, index) {
-                            Attendee attendee = attendees[index];
-                            return GestureDetector(
-                                onTap: () {
-                                  bloc.toggleCheck(
-                                      attendee.id, !attendee.checkIn, fromCamera: false);
-                                },
-                                child: Card(
-                                  elevation: 0,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(4)),
-                                  child: Container(
-                                    child: ListTile(
-                                      title: Text(
-                                          "${attendee.firstName} ${attendee.lastName}"),
-                                      leading: CircleGravatar(
-                                        uid: attendee.email,
-                                        placeholder:
-                                            '${attendee.firstName.substring(0, 1)}${attendee.lastName.substring(0, 1)}',
-                                      ),
-                                      trailing: Icon(
-                                        Icons.check_circle,
-                                        size: 30,
-                                        color: attendee.checkIn
-                                            ? Color(PRIMARY_COLOR)
-                                            : Color(0xFFD3D3D3),
-                                      ),
-                                    ),
+                      child: CustomScrollView(
+                        slivers: snapshot.data.entries
+                            .map((a) => SliverStickyHeader(
+                                header: Container(
+                                  height: 28,
+                                  color: Color(0xFFD3D3D3),
+                                  padding: EdgeInsets.only(left: 12, top: 6),
+                                  child: Text(a.key.toUpperCase()),
+                                ),
+                                sliver: SliverPadding(
+                                  padding: EdgeInsets.only(
+                                      left: 8, right: 8, top: 8, bottom: 8),
+                                  sliver: SliverList(
+                                    delegate: SliverChildBuilderDelegate(
+                                        (context, i) =>
+                                            _buildAttendee(a.value[i]),
+                                        childCount: a.value.length),
                                   ),
-                                ));
-                          }),
+                                )))
+                            .toList(),
+                      ),
                     )
                   ],
                 );
@@ -156,6 +142,30 @@ class _AttendeesScreeState extends State<AttendeesScreen> {
           onPressed: _scanQrCode,
         ));
   }
+
+  GestureDetector _buildAttendee(Attendee attendee) => GestureDetector(
+      onTap: () {
+        bloc.toggleCheck(attendee.id, !attendee.checkIn, fromCamera: false);
+      },
+      child: Card(
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        child: Container(
+          child: ListTile(
+            title: Text("${attendee.firstName} ${attendee.lastName}"),
+            leading: CircleGravatar(
+              uid: attendee.email,
+              placeholder: attendee.placeholder,
+            ),
+            trailing: Icon(
+              Icons.check_circle,
+              size: 30,
+              color:
+                  attendee.checkIn ? Color(PRIMARY_COLOR) : Color(0xFFD3D3D3),
+            ),
+          ),
+        ),
+      ));
 
   void _scanQrCode(ctx) async {
     try {

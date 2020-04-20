@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:flutter/cupertino.dart';
 import 'package:x_qrcode/api/api_service.dart';
@@ -12,38 +13,53 @@ enum AttendeesEvents {
 class AttendeesBloc implements Bloc {
   final ApiService apiService;
 
-  final _attendeesController = StreamController<List<Attendee>>();
+  final _attendeesController = StreamController<Map<String, List<Attendee>>>();
 
   final _eventsController = StreamController<AttendeesEvents>();
 
+  num get checked => _attendeesCheckCount;
+
+  num get count => _attendeesCount;
+
   List<Attendee> _attendees;
+  num _attendeesCheckCount;
+  num _attendeesCount;
 
   AttendeesBloc({@required this.apiService});
 
-  Stream<List<Attendee>> get attendeesStream => _attendeesController.stream;
+  Stream<Map<String, List<Attendee>>> get attendeesStream =>
+      _attendeesController.stream;
 
   Stream<AttendeesEvents> get eventsStream => _eventsController.stream;
 
   void loadAttendees() async {
     _attendees = await apiService.getAttendees();
-    _attendeesController.sink.add(_attendees);
+
+    _attendeesCheckCount = _attendees.where((a) => a.checkIn).length;
+    _attendeesCount = _attendees.length;
+
+    _attendeesController.sink.add(_groupAttendeesByFirstChar(_attendees));
   }
 
   void searchAttendees(String query) {
-    _attendeesController.sink.add(_attendees
+    _attendeesController.sink.add(_groupAttendeesByFirstChar((_attendees
         .where((a) => a.firstName.toLowerCase().contains(query))
-        .toList());
+        .toList())));
   }
 
   void toggleCheck(String id, bool check, {bool fromCamera = true}) async {
     await apiService.toggleCheck(id, check);
+
     _attendees = _attendees.map((a) {
       if (a.id == id) {
         return a.copy(check: check);
       }
       return a;
     }).toList();
-    _attendeesController.sink.add(_attendees);
+    _attendeesCheckCount += check ? 1 : -1;
+
+    _attendeesController.sink.add(_groupAttendeesByFirstChar(_attendees));
+
     if (fromCamera) {
       _eventsController.sink.add(AttendeesEvents.toggleSuccess);
     }
@@ -53,5 +69,22 @@ class AttendeesBloc implements Bloc {
   void dispose() {
     _attendeesController.close();
     _eventsController.close();
+  }
+
+  Map<String, List<Attendee>> _groupAttendeesByFirstChar(
+      List<Attendee> attendees) {
+    Map<String, List<Attendee>> attendeesGroupByFirstNameFirstChar =
+        SplayTreeMap((a, b) => a.compareTo(b));
+    attendees.forEach((attendee) {
+      var firstNameFirstChar = '-';
+      if (attendee.firstName != null && attendee.firstName.length > 0) {
+        firstNameFirstChar = attendee.firstName.substring(0, 1).toLowerCase();
+      }
+      if (!attendeesGroupByFirstNameFirstChar.containsKey(firstNameFirstChar)) {
+        attendeesGroupByFirstNameFirstChar[firstNameFirstChar] = List();
+      }
+      attendeesGroupByFirstNameFirstChar[firstNameFirstChar].add(attendee);
+    });
+    return attendeesGroupByFirstNameFirstChar;
   }
 }

@@ -39,12 +39,14 @@ class _CircleGravatarState extends State<CircleGravatar> {
     _networkImage
         .resolve(ImageConfiguration())
         .addListener(ImageStreamListener((_, __) {
-      if (mounted) {
-        setState(() {
-          _loading = false;
-        });
-      }
-    }));
+          if (mounted) {
+            setState(() {
+              _loading = false;
+            });
+          }
+        }, onError: (_, __) {
+          // Do nothing when image is not found, placeholder will be use instead.
+        }));
     super.initState();
   }
 
