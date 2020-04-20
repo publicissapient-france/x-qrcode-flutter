@@ -28,6 +28,7 @@ class Attendee {
         'firstName': firstName,
         'lastName': lastName,
         'email': email,
+        'checkIn': checkIn,
         'comments': comments
       };
 

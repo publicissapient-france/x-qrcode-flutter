@@ -36,7 +36,6 @@ class _EventsScreenState extends State<EventsScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        backgroundColor: Color(BACKGROUND_COLOR),
         appBar: AppBar(
           title: Text('Evenements'.toUpperCase()),
         ),
@@ -59,7 +58,7 @@ class _EventsScreenState extends State<EventsScreen> {
                                 String mode =
                                     await storage.read(key: STORAGE_KEY_MODE);
                                 if (mode == MODE_CHECK_IN) {
-                                  Navigator.pushNamed(context, attendeeRoute);
+                                  Navigator.pushNamed(context, attendeesRoute);
                                 } else {
                                   Navigator.pushNamed(context, visitorsRoute);
                                 }

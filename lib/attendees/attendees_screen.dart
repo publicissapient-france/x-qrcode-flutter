@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:x_qrcode/api/api_service.dart';
+import 'package:x_qrcode/attendee/attendee_screen.dart';
 import 'package:x_qrcode/attendees/attendees_bloc.dart';
 import 'package:x_qrcode/exception/checkin_exception.dart';
 import 'package:x_qrcode/widget/circle_gravatar_widget.dart';
@@ -14,7 +15,7 @@ import 'package:x_qrcode/visitor/widget/search_input_widget.dart';
 
 import '../constants.dart';
 
-const attendeeRoute = '/attendees';
+const attendeesRoute = '/attendees';
 
 class AttendeesScreen extends StatefulWidget {
   AttendeesScreen({Key key}) : super(key: key);
@@ -54,7 +55,6 @@ class _AttendeesScreeState extends State<AttendeesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(BACKGROUND_COLOR),
         appBar: AppBar(
           title: Text('Check-in'.toUpperCase()),
         ),
@@ -144,8 +144,10 @@ class _AttendeesScreeState extends State<AttendeesScreen> {
   }
 
   GestureDetector _buildAttendee(Attendee attendee) => GestureDetector(
-      onTap: () {
-        bloc.toggleCheck(attendee.id, !attendee.checkIn, fromCamera: false);
+      onTap: () async {
+        await Navigator.pushNamed(context, attendeeRoute,
+            arguments: AttendeeScreenArguments(attendee));
+        bloc.loadAttendees();
       },
       child: Card(
         elevation: 0,
