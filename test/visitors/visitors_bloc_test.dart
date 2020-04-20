@@ -21,8 +21,9 @@ void main() {
 
   group('Visitors', () {
     test('should load visitors', () {
+      final john = Attendee('1', 'John', 'Doe', 'jd@email.com', false, null);
       final attendees = [
-        Attendee('1', 'John', 'Doe', 'jd@email.com', false, null),
+        john,
       ];
       when(apiService.getVisitors()).thenAnswer((_) {
         return Future.value(attendees);
@@ -32,15 +33,21 @@ void main() {
 
       expectLater(
         visitorsBloc.visitorsStream,
-        emitsInOrder([attendees]),
+        emitsInOrder([
+          {
+            'j': [john]
+          }
+        ]),
       );
     });
 
     test('should search visitors', () async {
-      var john = Attendee('1', 'John', 'Doe', 'jd@email.com', false, null);
+      final john = Attendee('1', 'John', 'Doe', 'jd@email.com', false, null);
+      final oliver =
+          Attendee('2', 'Oliver', 'Queen', 'oq@email.com', false, null);
       final attendees = [
         john,
-        Attendee('2', 'Oliver', 'Queen', 'oq@email.com', false, null),
+        oliver,
       ];
       when(apiService.getVisitors()).thenAnswer((_) {
         return Future.value(attendees);
@@ -52,7 +59,12 @@ void main() {
 
       await expectLater(
         stream,
-        emitsInOrder([attendees]),
+        emitsInOrder([
+          {
+            'j': [john],
+            'o': [oliver]
+          }
+        ]),
       );
 
       visitorsBloc.searchVisitors('jo');
@@ -60,7 +72,9 @@ void main() {
       expectLater(
         stream,
         emitsInOrder([
-          [john],
+          {
+            'j': [john],
+          }
         ]),
       );
     });
