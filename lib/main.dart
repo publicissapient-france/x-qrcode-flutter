@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:x_qrcode/attendee/attendee_screen.dart';
 import 'package:x_qrcode/constants.dart';
@@ -14,6 +15,7 @@ import 'organization/organization_screen.dart';
 
 void main() async {
   await DotEnv().load('.env');
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(XQRCodeApp());
 }
 
