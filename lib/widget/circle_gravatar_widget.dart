@@ -63,7 +63,10 @@ class _CircleGravatarState extends State<CircleGravatar> {
   Widget build(BuildContext context) => _loading
       ? CircleAvatar(
           backgroundColor: Color(COLORS[url.hashCode % COLORS.length]),
-          child: Text(placeholder),
+          child: Text(
+            placeholder,
+            style: TextStyle(color: Colors.white),
+          ),
           radius: this.radius,
         )
       : CircleAvatar(
