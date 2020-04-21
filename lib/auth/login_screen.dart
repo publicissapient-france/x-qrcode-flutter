@@ -18,17 +18,41 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final Auth0 auth0 = Auth0(
-      baseUrl: DotEnv().env[ENV_KEY_OAUTH_AUTH_URL],
-      clientId: DotEnv().env[ENV_KEY_OAUTH_CLIENT_ID]);
+    baseUrl: DotEnv().env[ENV_KEY_OAUTH_AUTH_URL],
+    clientId: DotEnv().env[ENV_KEY_OAUTH_CLIENT_ID],
+  );
   final FlutterSecureStorage storage = FlutterSecureStorage();
 
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  final _usernameFocus = FocusNode();
+  final _passwordFocus = FocusNode();
+
+  bool error = false;
+  bool loading = false;
+
   @override
   void initState() {
     _pushOrganizationIfTokenExists();
+    usernameController.addListener(() {
+      setState(() {
+        error = false;
+      });
+    });
+    passwordController.addListener(() {
+      setState(() {
+        error = false;
+      });
+    });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    usernameController.dispose();
+    passwordController.dispose();
+    super.dispose();
   }
 
   void _pushOrganizationIfTokenExists() {
@@ -78,21 +102,47 @@ class _LoginScreenState extends State<LoginScreen> {
                       )
                     ],
                   ),
+                  error
+                      ? Container(
+                          margin: EdgeInsets.only(bottom: 8),
+                          child: Text(
+                            'Connexion échouée, veuillez vérifier vos identifiants.',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        )
+                      : Container(),
                   TextFormField(
                     controller: usernameController,
+                    focusNode: _usernameFocus,
+                    enabled: !loading,
                     decoration: InputDecoration(
-                        labelText: "E-mail",
+                        labelText: "Email",
                         contentPadding: EdgeInsets.only(top: 8, bottom: 4)),
+                    textInputAction: TextInputAction.go,
+                    onFieldSubmitted: (_) {
+                      _usernameFocus.unfocus();
+                      FocusScope.of(context).requestFocus(_passwordFocus);
+                    },
                   ),
                   Padding(
-                      padding: EdgeInsets.only(top: 8),
-                      child: TextFormField(
-                          controller: passwordController,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                              labelText: "Mot de passe",
-                              contentPadding:
-                                  EdgeInsets.only(top: 8, bottom: 4)))),
+                    padding: EdgeInsets.only(top: 8),
+                    child: TextFormField(
+                      controller: passwordController,
+                      focusNode: _passwordFocus,
+                      enabled: !loading,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        labelText: "Mot de passe",
+                        contentPadding: EdgeInsets.only(top: 8, bottom: 4),
+                      ),
+                      textInputAction: TextInputAction.done,
+                      onFieldSubmitted: (_) => _connect(
+                        context,
+                        usernameController.text,
+                        passwordController.text,
+                      ),
+                    ),
+                  ),
                   SizedBox(
                       width: double.infinity,
                       child: Padding(
@@ -103,7 +153,13 @@ class _LoginScreenState extends State<LoginScreen> {
                             "Suivant".toUpperCase(),
                             style: TextStyle(color: Colors.white),
                           ),
-                          onPressed: () => onPressed(),
+                          onPressed: loading
+                              ? () {}
+                              : () => _connect(
+                                    context,
+                                    usernameController.text,
+                                    passwordController.text,
+                                  ),
                         ),
                       )),
                   Container(
@@ -124,12 +180,11 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       );
 
-  void onPressed() {
-    _connect(usernameController.text, passwordController.text);
-  }
-
-  void _connect(String username, String password) async {
+  void _connect(BuildContext context, String username, String password) async {
     try {
+      setState(() {
+        loading = true;
+      });
       var response = await auth0.auth.passwordRealm({
         'username': '$username',
         'password': '$password',
@@ -141,8 +196,11 @@ class _LoginScreenState extends State<LoginScreen> {
       await storage.write(key: STORAGE_KEY_ACCESS_TOKEN, value: token);
       Navigator.of(context)
           .pushNamedAndRemoveUntil(organisationsRoute, (_) => false);
-    } catch (e) {
-      print(e);
+    } catch (_) {
+      setState(() {
+        loading = false;
+        error = true;
+      });
     }
   }
 }
