@@ -21,7 +21,7 @@ class SearchInput extends StatelessWidget {
               border: InputBorder.none,
               contentPadding: EdgeInsets.only(top: 16),
               prefixIcon: SvgPicture.asset(
-                'images/search.svg',
+                'images/ic_search.svg',
                 fit: BoxFit.scaleDown,
               ),
               hintText: 'Rechercher...'),

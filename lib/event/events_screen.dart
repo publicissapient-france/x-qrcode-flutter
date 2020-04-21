@@ -72,10 +72,11 @@ class _EventsScreenState extends State<EventsScreen> {
                                     Image.network(
                                       event.image,
                                       height: 120,
+                                      width: 128,
                                     ),
                                     Container(
                                         margin: EdgeInsets.only(
-                                          top: 0,
+                                          top: 8,
                                           left: 16,
                                           right: 16,
                                           bottom: 16,
@@ -87,6 +88,7 @@ class _EventsScreenState extends State<EventsScreen> {
                                               style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                               ),
+                                              textAlign: TextAlign.center,
                                             ),
                                             Text(event.tagline),
                                           ],
@@ -109,7 +111,11 @@ class _EventsScreenState extends State<EventsScreen> {
         '${DotEnv().env[ENV_KEY_API_URL]}/${user.tenant}/events',
         headers: {HttpHeaders.authorizationHeader: "Bearer $accessToken"});
     if (response.statusCode == 200) {
-      final _rawEvents = jsonDecode(response.body);
+      final _rawEvents = jsonDecode(response.body)
+        ..sort((a, b) =>
+            DateTime.parse(a['start']).isBefore(DateTime.parse(b['start']))
+                ? 1
+                : -1);
       final _events = List<Event>();
       for (var rawEvent in _rawEvents) {
         _events.add(Event.fromNetwork(rawEvent));
@@ -132,8 +138,12 @@ class Event {
   Event.fromNetwork(Map<String, dynamic> json)
       : id = json['id'],
         name = json['name'],
-        tagline = json['metadata']['header']['tagline'],
-        image = json['metadata']['header']['logo'];
+        tagline = json['metadata'] != null
+            ? json['metadata']['header']['tagline']
+            : '',
+        image = json['metadata'] != null
+            ? json['metadata']['header']['logo']
+            : json['logo']['url'];
 
   Event.fromJson(Map<String, dynamic> json)
       : id = json['id'],
