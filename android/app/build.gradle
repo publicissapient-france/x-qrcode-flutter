@@ -45,9 +45,25 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    buildTypes {
+    signingConfigs {
         release {
-            signingConfig signingConfigs.debug
+            if (System.getenv("BITRISEIO_ANDROID_KEYSTORE_URL")) {
+                storeFile file(System.getenv("BITRISEIO_ANDROID_KEYSTORE_URL"))
+                storePassword System.getenv("BITRISEIO_ANDROID_KEYSTORE_PASSWORD")
+                keyAlias System.getenv("BITRISEIO_ANDROID_KEYSTORE_ALIAS")
+                keyPassword System.getenv("BITRISEIO_ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD")
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            applicationIdSuffix ".dev"
+            resValue "string", "app_name", "🚧 X-QRCode"
+        }
+        release {
+            signingConfig signingConfigs.release
+            resValue "string", "app_name", "X-QRCode"
         }
     }
 }
