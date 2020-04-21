@@ -4,6 +4,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:crypto/crypto.dart';
 
+const COLORS = [
+  0xFFFE414D,
+  0xFF5675EE,
+  0xFF8B45AC,
+  0xFFE67E22,
+  0xFFB32429,
+  0xFF94C022,
+];
+
 class CircleGravatar extends StatefulWidget {
   final String uid;
   final String placeholder;
@@ -53,6 +62,7 @@ class _CircleGravatarState extends State<CircleGravatar> {
   @override
   Widget build(BuildContext context) => _loading
       ? CircleAvatar(
+          backgroundColor: Color(COLORS[url.hashCode % COLORS.length]),
           child: Text(placeholder),
           radius: this.radius,
         )
