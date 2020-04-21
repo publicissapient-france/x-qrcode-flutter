@@ -4,12 +4,21 @@ class Attendee {
   final bool checkIn;
   final String lastName;
   final String email;
+  final String jobTitle;
+  final String company;
   final String placeholder;
   final List<Comment> comments;
 
-  Attendee(this.id, this.firstName, this.lastName, this.email, this.checkIn,
-      this.comments)
-      : this.placeholder = _generatePlaceholder(firstName, lastName);
+  Attendee(
+    this.id,
+    this.firstName,
+    this.lastName,
+    this.email,
+    this.checkIn,
+    this.jobTitle,
+    this.company,
+    this.comments,
+  ) : this.placeholder = _generatePlaceholder(firstName, lastName);
 
   Attendee.fromJson(Map<String, dynamic> json)
       : id = json['attendee_id'],
@@ -17,6 +26,8 @@ class Attendee {
         lastName = json['lastName'],
         email = json['email'],
         checkIn = json['checkIn'] != null ? true : false,
+        jobTitle = json['jobTitle'],
+        company = json['company'],
         placeholder = _generatePlaceholder(json['firstName'], json['lastName']),
         comments = json['comments'] != null
             ? List<Comment>.from(
@@ -29,6 +40,8 @@ class Attendee {
         'lastName': lastName,
         'email': email,
         'checkIn': checkIn,
+        'jobTitle': jobTitle,
+        'company': company,
         'comments': comments
       };
 
@@ -41,6 +54,8 @@ class Attendee {
           firstName == other.firstName &&
           checkIn == other.checkIn &&
           lastName == other.lastName &&
+          jobTitle == other.jobTitle &&
+          company == other.company &&
           email == other.email;
 
   @override
@@ -49,6 +64,8 @@ class Attendee {
       firstName.hashCode ^
       checkIn.hashCode ^
       lastName.hashCode ^
+      jobTitle.hashCode ^
+      company.hashCode ^
       email.hashCode;
 
   @override
@@ -63,6 +80,8 @@ class Attendee {
       this.lastName,
       this.email,
       check,
+      this.jobTitle,
+      this.company,
       this.comments,
     );
   }

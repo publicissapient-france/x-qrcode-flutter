@@ -83,7 +83,7 @@ class _AppDrawerState extends State<AppDrawer> {
                         padding: EdgeInsets.all(0),
                         onPressed: _logout,
                         icon: SvgPicture.asset(
-                          'images/disconnect.svg',
+                          'images/ic_disconnect.svg',
                           color: Colors.white,
                         ),
                       )),

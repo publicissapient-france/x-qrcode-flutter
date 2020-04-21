@@ -77,8 +77,24 @@ class _VisitorScreenState extends State<VisitorScreen> {
                   slivers: <Widget>[
                     SliverList(
                       delegate: SliverChildListDelegate([
-                        InfoWidget(visitor.email, SvgPicture.asset('images/email.svg'),
-                            first: true),
+                        snapshot.data.company != null
+                            ? InfoWidget(
+                                snapshot.data.company,
+                                SvgPicture.asset('images/ic_company.svg'),
+                                first: true,
+                              )
+                            : Container(),
+                        snapshot.data.jobTitle != null
+                            ? InfoWidget(
+                                snapshot.data.jobTitle,
+                                SvgPicture.asset('images/ic_job.svg'),
+                              )
+                            : Container(),
+                        InfoWidget(
+                          snapshot.data.email,
+                          SvgPicture.asset('images/ic_email.svg'),
+                          copyToClipboard: true,
+                        ),
                         _commentFieldVisible
                             ? Container()
                             : _buildWriteComment(),

@@ -27,12 +27,14 @@ flutter:
   uses-material-design: true
   assets:
     - .env
-    - images/disconnect.svg
-    - images/email.svg
+    - images/ic_company.svg
+    - images/ic_disconnect.svg
+    - images/ic_email.svg
+    - images/ic_job.svg
+    - images/ic_search.svg
     - images/logo_mark.svg
     - images/logo_pse.png
     - images/logo_xqrcode.svg
-    - images/search.svg
   fonts:
     - family: FuturaNext
       fonts:

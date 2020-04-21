@@ -21,7 +21,16 @@ void main() {
 
   group('Attendees', () {
     test('should load attendees', () {
-      final john = Attendee('1', 'John', 'Doe', 'jd@email.com', false, null);
+      final john = Attendee(
+        '1',
+        'John',
+        'Doe',
+        'jd@email.com',
+        false,
+        null,
+        null,
+        null,
+      );
       when(apiService.getAttendees()).thenAnswer((_) => Future.value([john]));
 
       attendeesBloc.loadAttendees();
@@ -36,9 +45,26 @@ void main() {
     });
 
     test('should search attendees', () async {
-      final john = Attendee('1', 'John', 'Doe', 'jd@email.com', false, null);
-      var oliver =
-          Attendee('2', 'Oliver', 'Queen', 'oq@email.com', false, null);
+      final john = Attendee(
+        '1',
+        'John',
+        'Doe',
+        'jd@email.com',
+        false,
+        null,
+        null,
+        null,
+      );
+      var oliver = Attendee(
+        '2',
+        'Oliver',
+        'Queen',
+        'oq@email.com',
+        false,
+        null,
+        null,
+        null,
+      );
       when(apiService.getAttendees())
           .thenAnswer((_) => Future.value([john, oliver]));
 
@@ -65,9 +91,26 @@ void main() {
     });
 
     test('should toggle check', () async {
-      final john = Attendee('1', 'John', 'Doe', 'jd@email.com', false, null);
-      final oliver =
-          Attendee('2', 'Oliver', 'Queen', 'oq@email.com', false, null);
+      final john = Attendee(
+        '1',
+        'John',
+        'Doe',
+        'jd@email.com',
+        false,
+        null,
+        null,
+        null,
+      );
+      final oliver = Attendee(
+        '2',
+        'Oliver',
+        'Queen',
+        'oq@email.com',
+        false,
+        null,
+        null,
+        null,
+      );
       when(apiService.getAttendees())
           .thenAnswer((_) => Future.value([john, oliver]));
 
@@ -88,7 +131,18 @@ void main() {
           stream,
           emitsInOrder([
             {
-              'j': [Attendee('1', 'John', 'Doe', 'jd@email.com', true, null)],
+              'j': [
+                Attendee(
+                  '1',
+                  'John',
+                  'Doe',
+                  'jd@email.com',
+                  true,
+                  null,
+                  null,
+                  null,
+                )
+              ],
               'o': [oliver]
             },
           ]));

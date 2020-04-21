@@ -1,0 +1,28 @@
+<svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g opacity="0.6">
+        <path opacity="0.6" d="M41 10.333H25V39.666H41V10.333Z" stroke="black"
+            stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+        <path opacity="0.6" d="M25 25H9V39.667H25V25Z" stroke="black" stroke-miterlimit="10"
+            stroke-linecap="round" stroke-linejoin="round" />
+        <path opacity="0.6" d="M35.668 22.333H38.335" stroke="black" stroke-miterlimit="10"
+            stroke-linecap="round" stroke-linejoin="round" />
+        <path opacity="0.6" d="M35.668 18.333H38.335" stroke="black" stroke-miterlimit="10"
+            stroke-linecap="round" stroke-linejoin="round" />
+        <path opacity="0.6" d="M35.668 14.333H38.335" stroke="black" stroke-miterlimit="10"
+            stroke-linecap="round" stroke-linejoin="round" />
+        <path opacity="0.6" d="M14.332 39.666V34.333H19.665V39.666" stroke="black"
+            stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+        <path opacity="0.6" d="M13 29V30.333" stroke="black" stroke-miterlimit="10"
+            stroke-linecap="round" stroke-linejoin="round" />
+        <path opacity="0.6" d="M29 39.666V32.333" stroke="black" stroke-miterlimit="10"
+            stroke-linecap="round" stroke-linejoin="round" />
+        <path opacity="0.6" d="M33 39.666V32.333" stroke="black" stroke-miterlimit="10"
+            stroke-linecap="round" stroke-linejoin="round" />
+        <path opacity="0.6" d="M37 39.666V32.333" stroke="black" stroke-miterlimit="10"
+            stroke-linecap="round" stroke-linejoin="round" />
+        <path opacity="0.6" d="M17 29V30.333" stroke="black" stroke-miterlimit="10"
+            stroke-linecap="round" stroke-linejoin="round" />
+        <path opacity="0.6" d="M21 29V30.333" stroke="black" stroke-miterlimit="10"
+            stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+</svg>

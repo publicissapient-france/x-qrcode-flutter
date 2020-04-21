@@ -21,7 +21,16 @@ void main() {
 
   group('Visitors', () {
     test('should load visitors', () {
-      final john = Attendee('1', 'John', 'Doe', 'jd@email.com', false, null);
+      final john = Attendee(
+        '1',
+        'John',
+        'Doe',
+        'jd@email.com',
+        false,
+        null,
+        null,
+        null,
+      );
       final attendees = [
         john,
       ];
@@ -42,9 +51,26 @@ void main() {
     });
 
     test('should search visitors', () async {
-      final john = Attendee('1', 'John', 'Doe', 'jd@email.com', false, null);
-      final oliver =
-          Attendee('2', 'Oliver', 'Queen', 'oq@email.com', false, null);
+      final john = Attendee(
+        '1',
+        'John',
+        'Doe',
+        'jd@email.com',
+        false,
+        null,
+        null,
+        null,
+      );
+      final oliver = Attendee(
+        '2',
+        'Oliver',
+        'Queen',
+        'oq@email.com',
+        false,
+        null,
+        null,
+        null,
+      );
       final attendees = [
         john,
         oliver,
