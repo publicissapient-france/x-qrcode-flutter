@@ -34,9 +34,30 @@ class _VisitorsScreeState extends State<VisitorsScreen> {
   @override
   void initState() {
     super.initState();
+
     bloc.loadVisitors();
+
     searchTextEditingController.addListener(() =>
         bloc.searchVisitors(searchTextEditingController.text.toLowerCase()));
+
+    bloc.eventsStream.listen((event) async {
+      switch (event.type) {
+        case VisitorsEvents.scanSuccessExists:
+          Navigator.pushNamed(context, visitorRoute,
+              arguments: VisitorScreenArguments(event.id));
+          break;
+        case VisitorsEvents.scanSuccess:
+          final visitorConsent = await Navigator.pushNamed(
+            context,
+            consentRoute,
+            arguments: ConsentScreenArguments(event.id),
+          );
+          if (visitorConsent == true) {
+            bloc.loadVisitors();
+          }
+          break;
+      }
+    });
   }
 
   @override
@@ -124,14 +145,8 @@ class _VisitorsScreeState extends State<VisitorsScreen> {
     try {
       String barcode = await BarcodeScanner.scan();
       Map<String, dynamic> attendee = jsonDecode(barcode);
-      var visitorId = attendee['attendee_id'];
-      final visitorConsent = await Navigator.pushNamed(context, consentRoute,
-          arguments: ConsentScreenArguments(visitorId));
-      if (visitorConsent == true) {
-        bloc.loadVisitors();
-        Navigator.pushNamed(context, visitorsRoute,
-            arguments: VisitorScreenArguments(visitorId));
-      }
+      final visitorId = attendee['attendee_id'];
+      bloc.onVisitorScan(visitorId);
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         _onScanError(ctx, 'Vous devez accepter la permission 📸');

@@ -7,7 +7,8 @@ import 'package:x_qrcode/bloc/bloc.dart';
 import 'package:x_qrcode/visitor/model/attendee_model.dart';
 
 enum AttendeesEvents {
-  toggleSuccess,
+  checkInSuccess,
+  checkInError,
 }
 
 class AttendeesBloc implements Bloc {
@@ -50,20 +51,27 @@ class AttendeesBloc implements Bloc {
   }
 
   void toggleCheck(String id, bool check, {bool fromCamera = true}) async {
-    await apiService.toggleCheck(id, check);
+    try {
+      await apiService.toggleCheck(id, check);
 
-    _attendees = _attendees.map((a) {
-      if (a.id == id) {
-        return a.copy(check: check);
+      _attendees = _attendees.map((a) {
+        if (a.id == id) {
+          return a.copy(check: check);
+        }
+        return a;
+      }).toList();
+
+      _attendeesCheckCount += check ? 1 : -1;
+
+      _attendeesController.sink.add(_groupAttendeesByFirstChar(_attendees));
+
+      if (fromCamera) {
+        _eventsController.sink.add(AttendeesEvents.checkInSuccess);
       }
-      return a;
-    }).toList();
-    _attendeesCheckCount += check ? 1 : -1;
-
-    _attendeesController.sink.add(_groupAttendeesByFirstChar(_attendees));
-
-    if (fromCamera) {
-      _eventsController.sink.add(AttendeesEvents.toggleSuccess);
+    } catch (_) {
+      if (fromCamera) {
+        _eventsController.sink.add(AttendeesEvents.checkInError);
+      }
     }
   }
 

@@ -9,6 +9,7 @@ import 'package:signature/signature.dart';
 import 'package:x_qrcode/api/api_service.dart';
 import 'package:x_qrcode/event/events_screen.dart';
 import 'package:x_qrcode/organization/model/user_model.dart';
+import 'package:x_qrcode/visitor/visitor_screen.dart';
 
 import '../constants.dart';
 import 'model/attendee_model.dart';
@@ -146,7 +147,9 @@ class _ConsentScreenState extends State<ConsentScreen> {
                                     MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   RaisedButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
                                     child: Text('Annuler'),
                                   ),
                                   RaisedButton(
@@ -192,7 +195,12 @@ class _ConsentScreenState extends State<ConsentScreen> {
           'signature': signature,
         });
     if (response.statusCode == 201) {
-      Navigator.pop(context, true);
+      Navigator.pushReplacementNamed(
+        context,
+        visitorRoute,
+        result: true,
+        arguments: VisitorScreenArguments(visitorId),
+      );
     } else {
       throw Exception('Cannot add visitor');
     }
