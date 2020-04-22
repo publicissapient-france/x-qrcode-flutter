@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -40,8 +42,10 @@ class _AttendeesScreeState extends State<AttendeesScreen> {
         bloc.searchAttendees(searchTextEditingController.text.toLowerCase()));
 
     bloc.eventsStream.listen((event) {
-      if (event == AttendeesEvents.toggleSuccess) {
+      if (event == AttendeesEvents.checkInSuccess) {
         _onToggleSuccess(context);
+      } else if (event == AttendeesEvents.checkInError) {
+        _onCheckInError(context);
       }
     });
   }
@@ -173,7 +177,7 @@ class _AttendeesScreeState extends State<AttendeesScreen> {
     try {
       String barcode = await BarcodeScanner.scan();
       _showLoading(ctx);
-      bloc.toggleCheck(barcode, true);
+      bloc.toggleCheck(jsonDecode(barcode)['attendee_id'], true);
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         _onScanError(ctx, 'Vous devez accepter la permission 📸');
@@ -183,14 +187,18 @@ class _AttendeesScreeState extends State<AttendeesScreen> {
     } on FormatException {
       bloc.loadAttendees();
     } on CheckInException {
-      Navigator.pop(ctx);
-      _showError(ctx);
-      await Future.delayed(Duration(milliseconds: 750));
-      Navigator.pop(ctx);
-      _scanQrCode(ctx);
+      _onCheckInError(ctx);
     } catch (e) {
       _onScanError(ctx, 'Une erreur s‘est produite 😭');
     }
+  }
+
+  _onCheckInError(ctx) async {
+    Navigator.pop(ctx);
+    _showError(ctx);
+    await Future.delayed(Duration(milliseconds: 750));
+    Navigator.pop(ctx);
+    _scanQrCode(ctx);
   }
 
   void _onToggleSuccess(ctx) async {

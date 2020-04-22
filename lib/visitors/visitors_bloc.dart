@@ -6,10 +6,29 @@ import 'package:x_qrcode/api/api_service.dart';
 import 'package:x_qrcode/bloc/bloc.dart';
 import 'package:x_qrcode/visitor/model/attendee_model.dart';
 
+enum VisitorsEvents {
+  scanSuccessExists,
+  scanSuccess,
+}
+
+class Event {
+  final VisitorsEvents type;
+
+  Event(this.type);
+}
+
+class VisitorEvent extends Event {
+  final String id;
+
+  VisitorEvent(VisitorsEvents type, this.id) : super(type);
+}
+
 class VisitorsBloc implements Bloc {
   final ApiService apiService;
 
   final _visitorsController = StreamController<Map<String, List<Attendee>>>();
+
+  final _eventsController = StreamController<VisitorEvent>();
 
   List<Attendee> _visitors;
 
@@ -17,6 +36,8 @@ class VisitorsBloc implements Bloc {
 
   Stream<Map<String, List<Attendee>>> get visitorsStream =>
       _visitorsController.stream;
+
+  Stream<VisitorEvent> get eventsStream => _eventsController.stream;
 
   void loadVisitors() async {
     _visitors = await apiService.getVisitors();
@@ -32,6 +53,7 @@ class VisitorsBloc implements Bloc {
   @override
   void dispose() {
     _visitorsController.close();
+    _eventsController.close();
   }
 
   Map<String, List<Attendee>> _groupVisitorsByFirstChar(
@@ -49,5 +71,19 @@ class VisitorsBloc implements Bloc {
       attendeesGroupByFirstNameFirstChar[firstNameFirstChar].add(attendee);
     });
     return attendeesGroupByFirstNameFirstChar;
+  }
+
+  void onVisitorScan(id) {
+    if (_visitors.where((v) => v.id == id).isEmpty) {
+      _eventsController.sink.add(VisitorEvent(
+        VisitorsEvents.scanSuccess,
+        id,
+      ));
+    } else {
+      _eventsController.sink.add(VisitorEvent(
+        VisitorsEvents.scanSuccessExists,
+        id,
+      ));
+    }
   }
 }
