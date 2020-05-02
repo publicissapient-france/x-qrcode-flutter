@@ -28,7 +28,7 @@ class HeaderWidget extends StatelessWidget {
                 height: 160,
                 margin: EdgeInsets.only(bottom: 4),
                 child: Card(
-                  elevation: 2,
+                  elevation: 0,
                   margin: EdgeInsets.only(right: 8, left: 8),
                   child: Align(
                       alignment: Alignment.bottomCenter,
@@ -57,8 +57,7 @@ class HeaderWidget extends StatelessWidget {
                       child: Icon(
                         Icons.check_circle,
                         size: 30,
-                        color:
-                            checkIn ? Color(PRIMARY_COLOR) : Color(0xFFD3D3D3),
+                        color: checkIn ? Color(0xFF88C400) : Color(0xFFD3D3D3),
                       ),
                     ),
                   ),
@@ -75,6 +74,7 @@ class HeaderWidget extends StatelessWidget {
                 child: CircleGravatar(
                   uid: attendee.email,
                   placeholder: attendee.placeholder,
+                  fontSize: 36,
                 )),
           ),
         ],

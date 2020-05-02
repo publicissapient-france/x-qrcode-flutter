@@ -39,9 +39,9 @@ class _EventsScreenState extends State<EventsScreen> {
         appBar: AppBar(
           title: Text('Evenements'.toUpperCase()),
         ),
-        drawer: AppDrawer(),
+        endDrawer: AppDrawer(),
         body: Padding(
-            padding: EdgeInsets.all(8),
+            padding: EdgeInsets.all(15),
             child: FutureBuilder<List<Event>>(
                 future: events,
                 builder: (context, snapshot) {
@@ -66,20 +66,23 @@ class _EventsScreenState extends State<EventsScreen> {
                               child: Card(
                                 elevation: 0,
                                 shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(4)),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
                                 child: Column(
                                   children: <Widget>[
+                                    Container(
+                                      height: 15,
+                                    ),
                                     Image.network(
                                       event.image,
-                                      height: 120,
-                                      width: 128,
+                                      height: 90,
                                     ),
                                     Container(
                                         margin: EdgeInsets.only(
                                           top: 8,
                                           left: 16,
                                           right: 16,
-                                          bottom: 16,
+                                          bottom: 19,
                                         ),
                                         child: Column(
                                           children: [
@@ -87,10 +90,14 @@ class _EventsScreenState extends State<EventsScreen> {
                                               event.name,
                                               style: TextStyle(
                                                 fontWeight: FontWeight.bold,
+                                                fontSize: 18,
                                               ),
                                               textAlign: TextAlign.center,
                                             ),
-                                            Text(event.tagline),
+                                            Text(
+                                              event.tagline,
+                                              style: TextStyle(fontSize: 14),
+                                            ),
                                           ],
                                         ))
                                   ],

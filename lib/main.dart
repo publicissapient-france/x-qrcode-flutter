@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:x_qrcode/attendee/attendee_screen.dart';
+import 'package:x_qrcode/attendees/scan_error_screen.dart';
 import 'package:x_qrcode/constants.dart';
 import 'package:x_qrcode/event/events_screen.dart';
 import 'package:x_qrcode/home/home_screen.dart';
@@ -25,12 +26,17 @@ class XQRCodeApp extends StatelessWidget {
     return MaterialApp(
       title: 'X-QRCode',
       theme: ThemeData(
-          scaffoldBackgroundColor: Color(BACKGROUND_COLOR),
-          primaryColor: Color(PRIMARY_COLOR),
-          cursorColor: Color(PRIMARY_COLOR),
-          accentColor: Color(PRIMARY_COLOR),
-          textTheme: TextTheme(subhead: TextStyle(fontSize: 14)),
-          fontFamily: 'FuturaNext'),
+        scaffoldBackgroundColor: Color(BACKGROUND_COLOR),
+        primaryColor: Color(PRIMARY_COLOR),
+        cursorColor: Color(PRIMARY_COLOR),
+        accentColor: Color(PRIMARY_COLOR),
+        textTheme: TextTheme(
+          subhead: TextStyle(fontSize: 16),
+          body1: TextStyle(fontSize: 16, height: 1.5),
+          button: TextStyle(fontSize: 16),
+        ),
+        fontFamily: 'FuturaNext',
+      ),
       onGenerateRoute: (settings) {
         switch (settings.name) {
           case loginRoute:
@@ -56,6 +62,8 @@ class XQRCodeApp extends StatelessWidget {
               final VisitorScreenArguments args = settings.arguments;
               return VisitorScreen(visitorId: args.visitorId);
             });
+          case scanErrorRoute:
+            return MaterialPageRoute(builder: (_) => ScanErrorScreen());
           default:
             return MaterialPageRoute(builder: (_) => Container());
         }

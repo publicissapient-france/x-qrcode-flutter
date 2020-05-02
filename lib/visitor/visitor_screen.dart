@@ -62,7 +62,7 @@ class _VisitorScreenState extends State<VisitorScreen> {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: Text('📝 Commentaires'.toUpperCase()),
+          title: Text('Commentaires'.toUpperCase()),
           elevation: 0,
         ),
         body: FutureBuilder(
@@ -152,26 +152,26 @@ class _VisitorScreenState extends State<VisitorScreen> {
     );
   }
 
-  Row _buildCommentHeader(Comment comment) {
-    return Row(
-      children: <Widget>[
-        Expanded(
-          child: Text(
-            comment.authorFirstName,
-            style: TextStyle(fontWeight: FontWeight.bold),
+  Row _buildCommentHeader(Comment comment) => Row(
+        children: <Widget>[
+          Expanded(
+            child: Text(
+              comment.authorFirstName,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
-        ),
-        Container(
-          padding: EdgeInsets.only(right: 24),
-          child: Text(
-            _toPrettyDate(comment.date),
-            style: TextStyle(
-                fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey),
-          ),
-        )
-      ],
-    );
-  }
+          Container(
+            padding: EdgeInsets.only(right: 24),
+            child: Text(
+              _toPrettyDate(comment.date),
+              style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey),
+            ),
+          )
+        ],
+      );
 
   Positioned _buildPopupMenu(AsyncSnapshot snapshot, Comment comment) =>
       Positioned(
@@ -229,8 +229,9 @@ class _VisitorScreenState extends State<VisitorScreen> {
   Container _buildWriteComment() => Container(
       margin: EdgeInsets.only(top: 8, right: 8, left: 8),
       child: FlatButton(
-        shape:
-            RoundedRectangleBorder(borderRadius: new BorderRadius.circular(4)),
+        shape: RoundedRectangleBorder(
+          borderRadius: new BorderRadius.circular(4),
+        ),
         color: Color(PRIMARY_COLOR),
         child: Row(
           children: <Widget>[

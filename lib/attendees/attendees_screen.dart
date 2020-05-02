@@ -9,6 +9,7 @@ import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:x_qrcode/api/api_service.dart';
 import 'package:x_qrcode/attendee/attendee_screen.dart';
 import 'package:x_qrcode/attendees/attendees_bloc.dart';
+import 'package:x_qrcode/attendees/scan_error_screen.dart';
 import 'package:x_qrcode/exception/checkin_exception.dart';
 import 'package:x_qrcode/widget/circle_gravatar_widget.dart';
 import 'package:x_qrcode/visitor/model/attendee_model.dart';
@@ -42,9 +43,9 @@ class _AttendeesScreeState extends State<AttendeesScreen> {
         bloc.searchAttendees(searchTextEditingController.text.toLowerCase()));
 
     bloc.eventsStream.listen((event) {
-      if (event == AttendeesEvents.checkInSuccess) {
-        _onToggleSuccess(context);
-      } else if (event == AttendeesEvents.checkInError) {
+      if (event.type == AttendeesEventType.checkInSuccess) {
+        _onToggleSuccess(context, event.id);
+      } else if (event.type == AttendeesEventType.checkInError) {
         _onCheckInError(context);
       }
     });
@@ -166,8 +167,7 @@ class _AttendeesScreeState extends State<AttendeesScreen> {
             trailing: Icon(
               Icons.check_circle,
               size: 30,
-              color:
-                  attendee.checkIn ? Color(PRIMARY_COLOR) : Color(0xFFD3D3D3),
+              color: attendee.checkIn ? Color(0xFF88C400) : Color(0xFFD3D3D3),
             ),
           ),
         ),
@@ -195,17 +195,15 @@ class _AttendeesScreeState extends State<AttendeesScreen> {
 
   _onCheckInError(ctx) async {
     Navigator.pop(ctx);
-    _showError(ctx);
-    await Future.delayed(Duration(milliseconds: 750));
-    Navigator.pop(ctx);
+    await Navigator.pushNamed(context, scanErrorRoute);
     _scanQrCode(ctx);
   }
 
-  void _onToggleSuccess(ctx) async {
+  void _onToggleSuccess(ctx, String id) async {
     Navigator.pop(ctx);
-    _showSuccess(ctx);
-    await Future.delayed(Duration(milliseconds: 500));
-    Navigator.pop(ctx);
+    await Navigator.pushNamed(context, attendeeRoute,
+        arguments: AttendeeScreenArguments(
+            bloc.attendees.where((a) => a.id == id).first));
     _scanQrCode(ctx);
   }
 
@@ -219,24 +217,6 @@ class _AttendeesScreeState extends State<AttendeesScreen> {
               color: Colors.green,
               child: Icon(
                 Icons.check_circle,
-                color: Colors.white,
-                size: 152,
-              ),
-            ),
-          );
-        });
-  }
-
-  void _showError(ctx) {
-    showDialog(
-        context: ctx,
-        builder: (BuildContext context) {
-          return Dialog(
-            child: Container(
-              padding: EdgeInsets.all(32),
-              color: Colors.red,
-              child: Icon(
-                Icons.not_interested,
                 color: Colors.white,
                 size: 152,
               ),

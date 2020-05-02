@@ -51,7 +51,7 @@ class _OrganizationsScreenState extends State<OrganizationsScreen> {
                       child: RichText(
                         text: TextSpan(
                             text: 'Bonjour',
-                            style: TextStyle(color: Colors.black, height: 1.5),
+                            style: Theme.of(context).textTheme.body1,
                             children: [
                               TextSpan(
                                   text: ' ${snapshot.data.firstName}',
@@ -67,7 +67,13 @@ class _OrganizationsScreenState extends State<OrganizationsScreen> {
                     Flexible(
                         child: ListView.builder(
                             itemCount: snapshot.data.tenants.length,
-                            itemBuilder: (context, index) => FlatButton(
+                            itemBuilder: (context, index) => Container(
+                                padding: EdgeInsets.only(bottom: 16),
+                                child: FlatButton(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  padding: EdgeInsets.all(15),
                                   color: Color(PRIMARY_COLOR),
                                   onPressed: () async {
                                     var company = await _getCompany(
@@ -97,7 +103,7 @@ class _OrganizationsScreenState extends State<OrganizationsScreen> {
                                     snapshot.data.tenants[index].toUpperCase(),
                                     style: TextStyle(color: Colors.white),
                                   ),
-                                ))),
+                                )))),
                     Padding(
                       padding: EdgeInsets.only(top: 16),
                       child: Image.asset(

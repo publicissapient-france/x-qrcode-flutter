@@ -59,20 +59,25 @@ class _ConsentScreenState extends State<ConsentScreen> {
           future: screenData,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
+              final visitor = snapshot.data.visitor;
               return SingleChildScrollView(
                   child: Padding(
                       padding: EdgeInsets.all(16),
                       child: Column(
                         children: <Widget>[
-                          Container(
+                          Padding(
+                            padding: EdgeInsets.all(16),
+                            child: Container(
                               height: 100,
                               alignment: Alignment(0, 1),
                               child: Image.network(
-                                  snapshot.data.user.company.logo)),
+                                  snapshot.data.user.company.logo),
+                            ),
+                          ),
                           RichText(
                             text: TextSpan(
                                 text: 'Je souhaite partager avec ',
-                                style: TextStyle(color: Colors.black),
+                                style: Theme.of(context).textTheme.body1,
                                 children: [
                                   TextSpan(
                                       text: snapshot.data.user.company.name,
@@ -92,8 +97,14 @@ class _ConsentScreenState extends State<ConsentScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Text(
-                                      '${snapshot.data.visitor.firstName} ${snapshot.data.visitor.lastName}'),
-                                  Text(snapshot.data.visitor.email)
+                                      '${visitor.firstName} ${visitor.lastName}'),
+                                  Text(visitor.email),
+                                  visitor.company != null
+                                      ? Text(visitor.company)
+                                      : Container(),
+                                  visitor.jobTitle != null
+                                      ? Text(visitor.jobTitle)
+                                      : Container(),
                                 ],
                               )),
                           Row(
@@ -105,7 +116,8 @@ class _ConsentScreenState extends State<ConsentScreen> {
                                     text: TextSpan(
                                         text:
                                             'Je déclare avir pris connaissance de la ',
-                                        style: TextStyle(color: Colors.black),
+                                        style:
+                                            Theme.of(context).textTheme.body1,
                                         children: [
                                           TextSpan(
                                               text:
@@ -114,7 +126,8 @@ class _ConsentScreenState extends State<ConsentScreen> {
                                                   fontWeight: FontWeight.bold)),
                                           TextSpan(text: ' de la société '),
                                           TextSpan(
-                                              text: 'Sfeir',
+                                              text: snapshot
+                                                  .data.user.company.name,
                                               style: TextStyle(
                                                   fontWeight: FontWeight.bold)),
                                           TextSpan(
@@ -146,24 +159,29 @@ class _ConsentScreenState extends State<ConsentScreen> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
-                                  RaisedButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text('Annuler'),
+                                  SizedBox(
+                                    height: 40,
+                                    child: RaisedButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text('Annuler'),
+                                    ),
                                   ),
-                                  RaisedButton(
-                                    onPressed: consent && signed
-                                        ? () async {
-                                            final bytes =
-                                                await signature.toPngBytes();
-                                            await _addVisitor(
-                                                snapshot.data.visitor,
-                                                "data:image/png;base64,${base64.encode(bytes)}");
-                                          }
-                                        : null,
-                                    child: Text('Valider'),
-                                  )
+                                  SizedBox(
+                                    height: 40,
+                                    child: RaisedButton(
+                                      onPressed: consent && signed
+                                          ? () async {
+                                              final bytes =
+                                                  await signature.toPngBytes();
+                                              await _addVisitor(visitor,
+                                                  "data:image/png;base64,${base64.encode(bytes)}");
+                                            }
+                                          : null,
+                                      child: Text('Valider'),
+                                    ),
+                                  ),
                                 ],
                               ))
                         ],

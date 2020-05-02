@@ -8,7 +8,7 @@ import 'package:x_qrcode/visitor/model/attendee_model.dart';
 
 enum VisitorsEvents {
   scanSuccessExists,
-  scanSuccess,
+  scanSuccess
 }
 
 class Event {

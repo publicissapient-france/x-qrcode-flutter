@@ -6,9 +6,16 @@ import 'package:x_qrcode/api/api_service.dart';
 import 'package:x_qrcode/bloc/bloc.dart';
 import 'package:x_qrcode/visitor/model/attendee_model.dart';
 
-enum AttendeesEvents {
+enum AttendeesEventType {
   checkInSuccess,
   checkInError,
+}
+
+class AttendeesEvent {
+  final AttendeesEventType type;
+  final String id;
+
+  AttendeesEvent(this.type, this.id);
 }
 
 class AttendeesBloc implements Bloc {
@@ -16,7 +23,7 @@ class AttendeesBloc implements Bloc {
 
   final _attendeesController = StreamController<Map<String, List<Attendee>>>();
 
-  final _eventsController = StreamController<AttendeesEvents>();
+  final _eventsController = StreamController<AttendeesEvent>();
 
   num get checked => _attendeesCheckCount;
 
@@ -32,7 +39,9 @@ class AttendeesBloc implements Bloc {
   Stream<Map<String, List<Attendee>>> get attendeesStream =>
       _attendeesController.stream;
 
-  Stream<AttendeesEvents> get eventsStream => _eventsController.stream;
+  Stream<AttendeesEvent> get eventsStream => _eventsController.stream;
+
+  List<Attendee> get attendees => _attendees;
 
   void loadAttendees() async {
     _attendees = await apiService.getAttendees();
@@ -66,11 +75,21 @@ class AttendeesBloc implements Bloc {
       _attendeesController.sink.add(_groupAttendeesByFirstChar(_attendees));
 
       if (fromCamera) {
-        _eventsController.sink.add(AttendeesEvents.checkInSuccess);
+        _eventsController.sink.add(
+          AttendeesEvent(
+            AttendeesEventType.checkInSuccess,
+            id,
+          ),
+        );
       }
     } catch (_) {
       if (fromCamera) {
-        _eventsController.sink.add(AttendeesEvents.checkInError);
+        _eventsController.sink.add(
+          AttendeesEvent(
+            AttendeesEventType.checkInError,
+            id,
+          ),
+        );
       }
     }
   }

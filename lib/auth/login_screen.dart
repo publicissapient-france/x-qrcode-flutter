@@ -148,6 +148,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Padding(
                         padding: EdgeInsets.only(top: 40),
                         child: FlatButton(
+                          padding: EdgeInsets.all(15),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4),
+                          ),
                           color: Color(PRIMARY_COLOR),
                           child: Text(
                             "Suivant".toUpperCase(),

@@ -148,7 +148,7 @@ void main() {
           ]));
 
       expectLater(attendeesBloc.eventsStream,
-          emitsInOrder([AttendeesEvents.checkInSuccess]));
+          emitsInOrder([AttendeesEventType.checkInSuccess]));
     });
   });
 }
