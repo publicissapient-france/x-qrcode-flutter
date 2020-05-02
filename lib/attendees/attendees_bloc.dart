@@ -16,6 +16,19 @@ class AttendeesEvent {
   final String id;
 
   AttendeesEvent(this.type, this.id);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is AttendeesEvent &&
+              runtimeType == other.runtimeType &&
+              type == other.type &&
+              id == other.id;
+
+  @override
+  int get hashCode =>
+      type.hashCode ^
+      id.hashCode;
 }
 
 class AttendeesBloc implements Bloc {
