@@ -38,12 +38,22 @@ class InfoWidget extends StatelessWidget {
     Scaffold.of(context).showSnackBar(SnackBar(
       elevation: 1,
       behavior: SnackBarBehavior.floating,
-      content: Text(
-        'Copié dans le presse-papier 📋',
-        style: TextStyle(color: Colors.black),
-        textAlign: TextAlign.center,
+      content: Container(
+        height: 100,
+        child: Row(
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.only(right: 8),
+              child: Icon(Icons.check_circle),
+            ),
+            Text(
+              'Copié dans le presse-papier',
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xFF88C400),
     ));
   }
 }

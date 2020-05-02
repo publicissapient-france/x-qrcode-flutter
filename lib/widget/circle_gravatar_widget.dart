@@ -17,28 +17,35 @@ class CircleGravatar extends StatefulWidget {
   final String uid;
   final String placeholder;
   final double radius;
+  final double fontSize;
 
   const CircleGravatar({
     Key key,
     this.uid,
     this.placeholder,
     this.radius,
+    this.fontSize,
   }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() =>
-      _CircleGravatarState(this.uid, this.placeholder, this.radius);
+  State<StatefulWidget> createState() => _CircleGravatarState(
+        this.uid,
+        this.placeholder,
+        this.radius,
+        this.fontSize,
+      );
 }
 
 class _CircleGravatarState extends State<CircleGravatar> {
   final String url;
   final String placeholder;
   final double radius;
+  final double fontSize;
 
   NetworkImage _networkImage;
   bool _loading = true;
 
-  _CircleGravatarState(this.url, this.placeholder, this.radius) {
+  _CircleGravatarState(this.url, this.placeholder, this.radius, this.fontSize) {
     _networkImage = NetworkImage(
         'https://www.gravatar.com/avatar/${md5.convert(utf8.encode(this.url)).toString()}?d=404');
   }
@@ -65,7 +72,12 @@ class _CircleGravatarState extends State<CircleGravatar> {
           backgroundColor: Color(COLORS[url.hashCode % COLORS.length]),
           child: Text(
             placeholder,
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: this.fontSize != null
+                  ? this.fontSize
+                  : Theme.of(context).textTheme.body1.fontSize,
+            ),
           ),
           radius: this.radius,
         )
