@@ -10,7 +10,9 @@ import 'package:x_qrcode/api/api_service.dart';
 import 'package:x_qrcode/attendee/attendee_screen.dart';
 import 'package:x_qrcode/attendees/attendees_bloc.dart';
 import 'package:x_qrcode/attendees/scan_error_screen.dart';
+import 'package:x_qrcode/bloc/bloc_provider.dart';
 import 'package:x_qrcode/exception/checkin_exception.dart';
+import 'package:x_qrcode/main_bloc.dart';
 import 'package:x_qrcode/widget/circle_gravatar_widget.dart';
 import 'package:x_qrcode/visitor/model/attendee_model.dart';
 import 'package:x_qrcode/visitor/widget/scan_floating_action_widget.dart';
@@ -44,6 +46,9 @@ class _AttendeesScreeState extends State<AttendeesScreen> {
 
     bloc.eventsStream.listen((event) {
       if (event.type == AttendeesEventType.checkInSuccess) {
+        BlocProvider.of<MainBloc>(context).logEvent(
+          ANALYTICS_EVENT_ATTENDEE_SCAN,
+        );
         _onToggleSuccess(context, event.id);
       } else if (event.type == AttendeesEventType.checkInError) {
         _onCheckInError(context);

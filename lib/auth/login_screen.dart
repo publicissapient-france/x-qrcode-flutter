@@ -5,6 +5,8 @@ import 'package:flutter_auth0/flutter_auth0.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:x_qrcode/bloc/bloc_provider.dart';
+import 'package:x_qrcode/main_bloc.dart';
 import 'package:x_qrcode/organization/organization_screen.dart';
 
 import '../constants.dart';
@@ -198,6 +200,9 @@ class _LoginScreenState extends State<LoginScreen> {
       });
       final token = response['access_token'];
       await storage.write(key: STORAGE_KEY_ACCESS_TOKEN, value: token);
+      final mainBloc = BlocProvider.of<MainBloc>(context);
+      await mainBloc.setUserId(username);
+      mainBloc.logLogin();
       Navigator.of(context)
           .pushNamedAndRemoveUntil(organisationsRoute, (_) => false);
     } catch (_) {

@@ -7,11 +7,13 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:signature/signature.dart';
 import 'package:x_qrcode/api/api_service.dart';
+import 'package:x_qrcode/bloc/bloc_provider.dart';
 import 'package:x_qrcode/event/events_screen.dart';
 import 'package:x_qrcode/organization/model/user_model.dart';
 import 'package:x_qrcode/visitor/visitor_screen.dart';
 
 import '../constants.dart';
+import '../main_bloc.dart';
 import 'model/attendee_model.dart';
 
 class ConsentScreenArguments {
@@ -213,6 +215,9 @@ class _ConsentScreenState extends State<ConsentScreen> {
           'signature': signature,
         });
     if (response.statusCode == 201) {
+      BlocProvider.of<MainBloc>(context).logEvent(
+        ANALYTICS_EVENT_VISITOR_CONSENT,
+      );
       Navigator.pushReplacementNamed(
         context,
         visitorRoute,
