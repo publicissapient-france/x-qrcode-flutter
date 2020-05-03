@@ -5,3 +5,9 @@
 ## Presentation
 
 * 🇫🇷[X-QRCode](https://docs.google.com/presentation/d/1ohPtrCCCnyIZNdWt6itIh62XPApbaiJRkS0kK8m_SvA/edit?usp=sharing)
+
+## How to
+
+X-QRCode uses [.env](.env) to get back-end configuration.
+
+It also needs `android/app/google-services.json` and `ios/Runner/GoogleService-Info.plist` from Firebase.
