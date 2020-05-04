@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'package:x_qrcode/api/api_service.dart';
+import 'package:x_qrcode/bloc/bloc_provider.dart';
+import 'package:x_qrcode/main_bloc.dart';
 import 'package:x_qrcode/visitor/widget/header_widget.dart';
 import 'package:x_qrcode/visitor/widget/info_widget.dart';
 import 'package:x_qrcode/event/events_screen.dart';
@@ -278,6 +280,9 @@ class _VisitorScreenState extends State<VisitorScreen> {
           _visitor = ApiService().getAttendee(this.visitorId, true);
           _commentFieldVisible = false;
         });
+        BlocProvider.of<MainBloc>(context).logEvent(
+          ANALYTICS_EVENT_VISITOR_COMMENT,
+        );
       } else {
         throw Exception('Cannot comment on visitor');
       }

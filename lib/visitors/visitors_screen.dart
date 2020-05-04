@@ -7,6 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:x_qrcode/api/api_service.dart';
 import 'package:x_qrcode/bloc/bloc_provider.dart';
+import 'package:x_qrcode/constants.dart';
+import 'package:x_qrcode/main_bloc.dart';
 import 'package:x_qrcode/widget/circle_gravatar_widget.dart';
 import 'package:x_qrcode/visitor/widget/scan_floating_action_widget.dart';
 import 'package:x_qrcode/visitor/visitor_screen.dart';
@@ -47,6 +49,9 @@ class _VisitorsScreeState extends State<VisitorsScreen> {
               arguments: VisitorScreenArguments(event.id));
           break;
         case VisitorsEvents.scanSuccess:
+          BlocProvider.of<MainBloc>(context).logEvent(
+            ANALYTICS_EVENT_VISITOR_SCAN,
+          );
           final visitorConsent = await Navigator.pushNamed(
             context,
             consentRoute,

@@ -7,12 +7,14 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:x_qrcode/attendees/attendees_screen.dart';
+import 'package:x_qrcode/bloc/bloc_provider.dart';
 import 'package:x_qrcode/widget/app_drawer_widget.dart';
 import 'package:x_qrcode/constants.dart';
 import 'package:x_qrcode/organization/model/user_model.dart';
 import 'package:x_qrcode/visitors/visitors_screen.dart';
 
 import '../constants.dart';
+import '../main_bloc.dart';
 
 const eventsRoute = '/events';
 
@@ -57,6 +59,11 @@ class _EventsScreenState extends State<EventsScreen> {
                                     value: jsonEncode(event));
                                 String mode =
                                     await storage.read(key: STORAGE_KEY_MODE);
+                                BlocProvider.of<MainBloc>(context)
+                                    .setUserProperty(
+                                  ANALYTICS_PROPERTY_EVENT,
+                                  event.name,
+                                );
                                 if (mode == MODE_CHECK_IN) {
                                   Navigator.pushNamed(context, attendeesRoute);
                                 } else {
