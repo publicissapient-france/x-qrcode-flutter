@@ -148,12 +148,12 @@ class _VisitorsScreeState extends State<VisitorsScreen> {
 
   void _scanQrCode(ctx) async {
     try {
-      String barcode = await BarcodeScanner.scan();
-      Map<String, dynamic> attendee = jsonDecode(barcode);
+      var scanResult = await BarcodeScanner.scan();
+      Map<String, dynamic> attendee = jsonDecode(scanResult.rawContent);
       final visitorId = attendee['attendee_id'];
       bloc.onVisitorScan(visitorId);
     } on PlatformException catch (e) {
-      if (e.code == BarcodeScanner.CameraAccessDenied) {
+      if (e.code == BarcodeScanner.cameraAccessDenied) {
         _onScanError(ctx, 'Vous devez accepter la permission 📸');
       } else {
         _onScanError(ctx, 'Une erreur s‘est produite 😭');
