@@ -40,8 +40,8 @@ class XQRCodeApp extends StatelessWidget {
             cursorColor: Color(PRIMARY_COLOR),
             accentColor: Color(PRIMARY_COLOR),
             textTheme: TextTheme(
-              subhead: TextStyle(fontSize: 16),
-              body1: TextStyle(fontSize: 16, height: 1.5),
+              subtitle2: TextStyle(fontSize: 16),
+              bodyText2: TextStyle(fontSize: 16, height: 1.5),
               button: TextStyle(fontSize: 16),
             ),
             fontFamily: 'FuturaNext',

@@ -36,7 +36,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
-    _pushOrganizationIfTokenExists();
     usernameController.addListener(() {
       setState(() {
         error = false;
@@ -55,16 +54,6 @@ class _LoginScreenState extends State<LoginScreen> {
     usernameController.dispose();
     passwordController.dispose();
     super.dispose();
-  }
-
-  void _pushOrganizationIfTokenExists() {
-    Future(() {
-      storage.read(key: STORAGE_KEY_ACCESS_TOKEN).then((token) {
-        if (token != null) {
-          Navigator.pushNamed(context, organisationsRoute);
-        }
-      });
-    });
   }
 
   @override
@@ -198,8 +187,15 @@ class _LoginScreenState extends State<LoginScreen> {
         'scope': DotEnv().env[ENV_KEY_OAUTH_SCOPE],
         'realm': DotEnv().env[ENV_KEY_OAUTH_REALM]
       });
-      final token = response['access_token'];
-      await storage.write(key: STORAGE_KEY_ACCESS_TOKEN, value: token);
+      await storage.write(
+          key: STORAGE_KEY_REFRESH_TOKEN, value: response['refresh_token']);
+      await storage.write(
+          key: STORAGE_KEY_ACCESS_TOKEN, value: response['access_token']);
+      await storage.write(
+          key: STORAGE_KEY_TOKEN_EXPIRES_IN,
+          value: DateTime.fromMillisecondsSinceEpoch(response['expires_in'] +
+                  DateTime.now().millisecondsSinceEpoch)
+              .toIso8601String());
       final mainBloc = BlocProvider.of<MainBloc>(context);
       await mainBloc.setUserId(username);
       mainBloc.logLogin();
