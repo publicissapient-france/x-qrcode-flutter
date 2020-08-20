@@ -1,5 +1,4 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:flutter_auth0/flutter_auth0.dart';
 import 'package:x_qrcode/bloc/bloc.dart';
 
 class MainBloc implements Bloc {

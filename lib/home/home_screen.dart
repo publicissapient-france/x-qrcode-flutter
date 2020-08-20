@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_auth0/flutter_auth0.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:x_qrcode/api/api_service.dart';
 import 'package:x_qrcode/auth/login_screen.dart';
 import 'package:x_qrcode/event/events_screen.dart';
+import 'package:x_qrcode/home/home_bloc.dart';
 import 'package:x_qrcode/organization/organization_screen.dart';
 
 import '../constants.dart';
@@ -12,35 +16,35 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Future<Widget> home;
+  final HomeBloc bloc = HomeBloc(
+      ApiService(),
+      FlutterSecureStorage(),
+      Auth0(
+        baseUrl: DotEnv().env[ENV_KEY_OAUTH_AUTH_URL],
+        clientId: DotEnv().env[ENV_KEY_OAUTH_CLIENT_ID],
+      ));
 
   @override
   void initState() {
-    home = _getAppropriateHome();
+    bloc.getAppropriateHome();
     super.initState();
   }
 
   @override
-  Widget build(BuildContext context) => FutureBuilder<Widget>(
-        future: home,
+  Widget build(BuildContext context) => StreamBuilder<HOMES>(
+        stream: bloc.home,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return snapshot.data;
+            switch (snapshot.data) {
+              case HOMES.EVENTS:
+                return EventsScreen();
+              case HOMES.ORGANIZATIONS:
+                return OrganizationsScreen();
+              case HOMES.LOGIN:
+                return LoginScreen();
+            }
           }
           return Container();
         },
       );
-
-  Future<Widget> _getAppropriateHome() async {
-    final FlutterSecureStorage storage = FlutterSecureStorage();
-    final token = await storage.read(key: STORAGE_KEY_ACCESS_TOKEN);
-    if (token != null) {
-      final user = await storage.read(key: STORAGE_KEY_USER);
-      if (user != null) {
-        return EventsScreen();
-      }
-      return OrganizationsScreen();
-    }
-    return LoginScreen();
-  }
 }

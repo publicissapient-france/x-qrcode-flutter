@@ -8,6 +8,8 @@ const ROLE_SPONSOR = 'ROLE_SPONSOR';
 const APP_NAMESPACE = 'http://x-qrcode.techx.fr';
 
 const STORAGE_KEY_ACCESS_TOKEN = 'st_access_token';
+const STORAGE_KEY_REFRESH_TOKEN = 'st_refresh_token';
+const STORAGE_KEY_TOKEN_EXPIRES_IN = 'st_token_expires_in';
 const STORAGE_KEY_USER = 'st_user';
 const STORAGE_KEY_EVENT = 'st_event';
 const STORAGE_KEY_MODE = 'st_mode';
