@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:x_qrcode/api/model/check_in_response.dart';
 import 'package:x_qrcode/exception/checkin_exception.dart';
 
 import 'package:x_qrcode/event/events_screen.dart';
@@ -91,7 +92,7 @@ class ApiService {
     }
   }
 
-  Future<bool> toggleCheck(String id, bool check) async {
+  Future<CheckInResponse> toggleCheck(String id, bool check) async {
     final user =
         User.fromJson(jsonDecode(await storage.read(key: STORAGE_KEY_USER)));
     final accessToken = await storage.read(key: STORAGE_KEY_ACCESS_TOKEN);
@@ -104,7 +105,8 @@ class ApiService {
         body: {'checked': '$check'});
 
     if (response.statusCode == 200) {
-      return check;
+      return new CheckInResponse(
+          jsonDecode(response.body)['attendee_id'], check);
     } else {
       throw CheckInException(
           'Cannot check-in attendee, status: ${response.statusCode}, message: ${response.body}');

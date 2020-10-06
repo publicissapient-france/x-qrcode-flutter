@@ -148,10 +148,11 @@ class _VisitorsScreeState extends State<VisitorsScreen> {
 
   void _scanQrCode(ctx) async {
     try {
-      var scanResult = await BarcodeScanner.scan();
-      Map<String, dynamic> attendee = jsonDecode(scanResult.rawContent);
-      final visitorId = attendee['attendee_id'];
-      bloc.onVisitorScan(visitorId);
+      var scanResult = await BarcodeScanner.scan(
+          options: ScanOptions(restrictFormat: [BarcodeFormat.qr]));
+      if (scanResult.type != ResultType.Cancelled) {
+        bloc.onVisitorScan(scanResult.rawContent);
+      }
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.cameraAccessDenied) {
         _onScanError(ctx, 'Vous devez accepter la permission 📸');

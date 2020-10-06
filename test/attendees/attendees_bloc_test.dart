@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:x_qrcode/api/api_service.dart';
+import 'package:x_qrcode/api/model/check_in_response.dart';
 import 'package:x_qrcode/attendees/attendees_bloc.dart';
 import 'package:x_qrcode/visitor/model/attendee_model.dart';
 
@@ -22,15 +23,7 @@ void main() {
   group('Attendees', () {
     test('should load attendees', () {
       final john = Attendee(
-        '1',
-        'John',
-        'Doe',
-        'jd@email.com',
-        false,
-        null,
-        null,
-        null,
-      );
+          '1', 'John', 'Doe', 'jd@email.com', false, null, null, null, null);
       when(apiService.getAttendees()).thenAnswer((_) => Future.value([john]));
 
       attendeesBloc.loadAttendees();
@@ -46,25 +39,9 @@ void main() {
 
     test('should search attendees', () async {
       final john = Attendee(
-        '1',
-        'John',
-        'Doe',
-        'jd@email.com',
-        false,
-        null,
-        null,
-        null,
-      );
-      var oliver = Attendee(
-        '2',
-        'Oliver',
-        'Queen',
-        'oq@email.com',
-        false,
-        null,
-        null,
-        null,
-      );
+          '1', 'John', 'Doe', 'jd@email.com', false, null, null, null, null);
+      var oliver = Attendee('2', 'Oliver', 'Queen', 'oq@email.com', false, null,
+          null, null, null);
       when(apiService.getAttendees())
           .thenAnswer((_) => Future.value([john, oliver]));
 
@@ -92,28 +69,13 @@ void main() {
 
     test('should toggle check', () async {
       final john = Attendee(
-        '1',
-        'John',
-        'Doe',
-        'jd@email.com',
-        false,
-        null,
-        null,
-        null,
-      );
-      final oliver = Attendee(
-        '2',
-        'Oliver',
-        'Queen',
-        'oq@email.com',
-        false,
-        null,
-        null,
-        null,
-      );
+          '1', 'John', 'Doe', 'jd@email.com', false, null, null, null, null);
+      final oliver = Attendee('2', 'Oliver', 'Queen', 'oq@email.com', false,
+          null, null, null, null);
       when(apiService.getAttendees())
           .thenAnswer((_) => Future.value([john, oliver]));
-
+      when(apiService.toggleCheck(any, any))
+          .thenAnswer((_) => Future.value(CheckInResponse('1', true)));
       attendeesBloc.loadAttendees();
       var stream = attendeesBloc.attendeesStream.asBroadcastStream();
       await expectLater(
@@ -132,16 +94,8 @@ void main() {
           emitsInOrder([
             {
               'j': [
-                Attendee(
-                  '1',
-                  'John',
-                  'Doe',
-                  'jd@email.com',
-                  true,
-                  null,
-                  null,
-                  null,
-                )
+                Attendee('1', 'John', 'Doe', 'jd@email.com', true, null, null,
+                    null, null)
               ],
               'o': [oliver]
             },
