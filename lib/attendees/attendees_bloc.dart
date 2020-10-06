@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:collection';
+import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:x_qrcode/api/api_service.dart';
@@ -26,9 +27,7 @@ class AttendeesEvent {
               id == other.id;
 
   @override
-  int get hashCode =>
-      type.hashCode ^
-      id.hashCode;
+  int get hashCode => type.hashCode ^ id.hashCode;
 }
 
 class AttendeesBloc implements Bloc {
@@ -59,7 +58,9 @@ class AttendeesBloc implements Bloc {
   void loadAttendees() async {
     _attendees = await apiService.getAttendees();
 
-    _attendeesCheckCount = _attendees.where((a) => a.checkIn).length;
+    _attendeesCheckCount = _attendees
+        .where((a) => a.checkIn)
+        .length;
     _attendeesCount = _attendees.length;
 
     searchAttendees(_query);
@@ -72,12 +73,14 @@ class AttendeesBloc implements Bloc {
         .toList())));
   }
 
-  void toggleCheck(String id, bool check, {bool fromCamera = true}) async {
+  void toggleCheck(String rawContent, bool check,
+      {bool fromCamera = true}) async {
+    String id = _extractId(rawContent);
     try {
-      await apiService.toggleCheck(id, check);
+      final response = await apiService.toggleCheck(id, check);
 
       _attendees = _attendees.map((a) {
-        if (a.id == id) {
+        if (a.id == response.id) {
           return a.copy(check: check);
         }
         return a;
@@ -91,7 +94,7 @@ class AttendeesBloc implements Bloc {
         _eventsController.sink.add(
           AttendeesEvent(
             AttendeesEventType.checkInSuccess,
-            id,
+            response.id,
           ),
         );
       }
@@ -107,6 +110,16 @@ class AttendeesBloc implements Bloc {
     }
   }
 
+
+  String _extractId(String rawContent) {
+    const ATTENDEE_ID = 'attendee_id';
+    var id = rawContent;
+    if (rawContent.contains(ATTENDEE_ID)) {
+      id = jsonDecode(rawContent)[ATTENDEE_ID];
+    }
+    return id;
+  }
+
   @override
   void dispose() {
     _attendeesController.close();
@@ -116,7 +129,7 @@ class AttendeesBloc implements Bloc {
   Map<String, List<Attendee>> _groupAttendeesByFirstChar(
       List<Attendee> attendees) {
     Map<String, List<Attendee>> attendeesGroupByFirstNameFirstChar =
-        SplayTreeMap((a, b) => a.compareTo(b));
+    SplayTreeMap((a, b) => a.compareTo(b));
     attendees.forEach((attendee) {
       var firstNameFirstChar = '-';
       if (attendee.firstName != null && attendee.firstName.length > 0) {

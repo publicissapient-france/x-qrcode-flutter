@@ -30,6 +30,7 @@ void main() {
         null,
         null,
         null,
+        null
       );
       final attendees = [
         john,
@@ -60,6 +61,7 @@ void main() {
         null,
         null,
         null,
+        null
       );
       final oliver = Attendee(
         '2',
@@ -70,6 +72,7 @@ void main() {
         null,
         null,
         null,
+        null
       );
       final attendees = [
         john,
