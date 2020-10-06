@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -178,13 +176,11 @@ class _AttendeesScreeState extends State<AttendeesScreen> {
 
   void _scanQrCode(ctx) async {
     try {
-      var scanResult = await BarcodeScanner.scan();
-      if (scanResult.type == ResultType.Barcode) {
+      var scanResult = await BarcodeScanner.scan(
+          options: ScanOptions(restrictFormat: [BarcodeFormat.qr]));
+      if (scanResult.type != ResultType.Cancelled) {
         _showLoading(ctx);
-        bloc.toggleCheck(
-            jsonDecode(scanResult.rawContent)['attendee_id'], true);
-      } else {
-        bloc.loadAttendees();
+        bloc.toggleCheck(scanResult.rawContent, true);
       }
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.cameraAccessDenied) {
@@ -233,6 +229,7 @@ class _AttendeesScreeState extends State<AttendeesScreen> {
   }
 
   void _onScanError(ctx, message) {
+    Navigator.pop(ctx);
     Scaffold.of(ctx).showSnackBar(
         SnackBar(backgroundColor: Colors.red[900], content: Text(message)));
   }

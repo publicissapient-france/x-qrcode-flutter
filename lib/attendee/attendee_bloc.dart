@@ -18,8 +18,8 @@ class AttendeeBloc extends Bloc {
   }
 
   void checkIn() async {
-    final check = await apiService.toggleCheck(_attendee.id, !_attendee.checkIn);
-    _attendee = _attendee.copy(check: check);
+    final response = await apiService.toggleCheck(_attendee.id, !_attendee.checkIn);
+    _attendee = _attendee.copy(check: response.check);
     _attendeeController.sink.add(_attendee);
   }
 

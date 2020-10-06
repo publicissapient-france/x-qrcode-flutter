@@ -222,7 +222,8 @@ class _ConsentScreenState extends State<ConsentScreen> {
         context,
         visitorRoute,
         result: true,
-        arguments: VisitorScreenArguments(visitorId),
+        arguments:
+            VisitorScreenArguments(jsonDecode(response.body)['attendee_id']),
       );
     } else {
       throw Exception('Cannot add visitor');

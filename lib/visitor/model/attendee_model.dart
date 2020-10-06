@@ -8,17 +8,11 @@ class Attendee {
   final String company;
   final String placeholder;
   final List<Comment> comments;
+  final String barcode;
 
-  Attendee(
-    this.id,
-    this.firstName,
-    this.lastName,
-    this.email,
-    this.checkIn,
-    this.jobTitle,
-    this.company,
-    this.comments,
-  ) : this.placeholder = _generatePlaceholder(firstName, lastName);
+  Attendee(this.id, this.firstName, this.lastName, this.email, this.checkIn,
+      this.jobTitle, this.company, this.comments, this.barcode)
+      : this.placeholder = _generatePlaceholder(firstName, lastName);
 
   Attendee.fromJson(Map<String, dynamic> json)
       : id = json['attendee_id'],
@@ -32,7 +26,8 @@ class Attendee {
         comments = json['comments'] != null
             ? List<Comment>.from(
                 json['comments'].map((comment) => Comment.fromNetwork(comment)))
-            : [];
+            : [],
+        barcode = json['barcode'];
 
   Map<String, dynamic> toJson() => {
         'attendee_id': id,
@@ -42,7 +37,8 @@ class Attendee {
         'checkIn': checkIn,
         'jobTitle': jobTitle,
         'company': company,
-        'comments': comments
+        'comments': comments,
+        'barcode': barcode
       };
 
   @override
@@ -56,7 +52,8 @@ class Attendee {
           lastName == other.lastName &&
           jobTitle == other.jobTitle &&
           company == other.company &&
-          email == other.email;
+          email == other.email &&
+          barcode == other.barcode;
 
   @override
   int get hashCode =>
@@ -66,24 +63,17 @@ class Attendee {
       lastName.hashCode ^
       jobTitle.hashCode ^
       company.hashCode ^
-      email.hashCode;
+      email.hashCode ^
+      barcode.hashCode;
 
   @override
   String toString() {
-    return 'Attendee{id: $id, checkIn: $checkIn}';
+    return 'Attendee{id: $id, barcode: $barcode, checkIn: $checkIn}';
   }
 
   Attendee copy({bool check}) {
-    return Attendee(
-      this.id,
-      this.firstName,
-      this.lastName,
-      this.email,
-      check,
-      this.jobTitle,
-      this.company,
-      this.comments,
-    );
+    return Attendee(this.id, this.firstName, this.lastName, this.email, check,
+        this.jobTitle, this.company, this.comments, this.barcode);
   }
 
   static _generatePlaceholder(String firstName, String lastName) {

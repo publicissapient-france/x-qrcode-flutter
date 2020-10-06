@@ -1,15 +1,13 @@
 import 'dart:async';
 import 'dart:collection';
+import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:x_qrcode/api/api_service.dart';
 import 'package:x_qrcode/bloc/bloc.dart';
 import 'package:x_qrcode/visitor/model/attendee_model.dart';
 
-enum VisitorsEvents {
-  scanSuccessExists,
-  scanSuccess
-}
+enum VisitorsEvents { scanSuccessExists, scanSuccess }
 
 class Event {
   final VisitorsEvents type;
@@ -73,8 +71,19 @@ class VisitorsBloc implements Bloc {
     return attendeesGroupByFirstNameFirstChar;
   }
 
-  void onVisitorScan(id) {
-    if (_visitors.where((v) => v.id == id).isEmpty) {
+  String _extractId(String rawContent) {
+    const ATTENDEE_ID = 'attendee_id';
+    var id = rawContent;
+    if (rawContent.contains(ATTENDEE_ID)) {
+      id = jsonDecode(rawContent)[ATTENDEE_ID];
+    }
+    return id;
+  }
+
+  void onVisitorScan(rawContent) {
+    var id = _extractId(rawContent);
+    var user = _visitors.where((v) => v.id == id || v.barcode == id);
+    if (user.isEmpty) {
       _eventsController.sink.add(VisitorEvent(
         VisitorsEvents.scanSuccess,
         id,
@@ -82,7 +91,7 @@ class VisitorsBloc implements Bloc {
     } else {
       _eventsController.sink.add(VisitorEvent(
         VisitorsEvents.scanSuccessExists,
-        id,
+        user.first.id,
       ));
     }
   }
